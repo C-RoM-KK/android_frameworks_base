@@ -63,6 +63,7 @@ public class QSConstants {
         //Key for custom tile additive
         public static final String TILE_CUSTOM_KEY = " Key=";
         public static final String TILE_FCHARGE = "toggleFastCharge";
+        public static final String TILE_PROFILE = "toggleProfile";
         public static final String TILE_BATTERYSAVER = "toggleBatterySaver";
         public static final String TILE_CUSTOM_DELIMITER = " =action= ";
 
@@ -79,6 +80,7 @@ public class QSConstants {
             TILES_DEFAULT.add(TILE_AIRPLANE);
             TILES_DEFAULT.add(TILE_BLUETOOTH);
             TILES_DEFAULT.add(TILE_LOCATION);
+            TILES_DEFAULT.add(TILE_PROFILE);
         }
 
         public static ArrayList<String> DYNAMIC_TILES_DEFAULT = new ArrayList<String>();

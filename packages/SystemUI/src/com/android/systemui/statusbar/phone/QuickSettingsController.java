@@ -119,6 +119,7 @@ import com.android.systemui.quicksettings.WifiAPTile;
 import com.android.systemui.quicksettings.RebootTile;
 import com.android.systemui.quicksettings.OnTheGoTile;
 import com.android.systemui.quicksettings.HoverTile;
+import com.android.systemui.quicksettings.ProfileTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -286,6 +287,8 @@ public class QuickSettingsController {
                 qs = new OnTheGoTile(mContext, this);
             } else if (tile.equals(TILE_HOVER)) {
                 qs = new HoverTile(mContext, this);
+            } else if (tile.equals(TILE_PROFILE)) {
+                qs = new ProfileTile(mContext, this);
             }
 
             if (qs != null) {
