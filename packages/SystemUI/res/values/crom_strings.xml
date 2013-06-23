@@ -146,6 +146,7 @@
     <string name="quick_settings_network_type">Status</string>
     <string name="quick_settings_network_unknown">Unknown</string>
     <string name="quick_settings_network_disable">No internet</string>
+    <string name="quick_settings_camera_label">Camera</string>
 
     <!-- Network Strings for battery saver mode -->
     <string name="network_4G">4G/LTE</string>
@@ -243,5 +244,8 @@
     <string name="onthego_transparency">Transparency</string>
     <string name="onthego_front_camera">Use front camera</string>
     <string name="onthego_service_toggle">Automatically restart service</string>
+
+    <!-- Camera tile toasts -->
+    <string name="quick_settings_camera_error_connect">Can\'t connect to camera</string>
 
 </resources>
