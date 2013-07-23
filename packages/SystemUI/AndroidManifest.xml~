@@ -77,9 +77,6 @@
     <!-- Wifi Display -->
     <uses-permission android:name="android.permission.CONFIGURE_WIFI_DISPLAY" />
 
-    <!-- AppSidebar -->
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
-
     <!-- Kill app permission -->
     <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
 
@@ -99,6 +96,9 @@
 
     <!-- Active display -->
     <uses-permission android:name="android.permission.SYSTEM_NOTIFICATION_LISTENER" />
+
+    <!-- AppSidebar -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
 
     <application
         android:persistent="true"
@@ -480,6 +480,18 @@
             </intent-filter>
         </service>
 
+<<<<<<< HEAD
+=======
+        <activity android:name=".DessertCaseDreamSettings"
+            android:process=":sweetsweetdesserts"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
+
         <activity android:name=".statusbar.sidebar.SidebarConfigurationActivity"
                   android:label="@string/title_activity_sidebar_configuration"
                   android:taskAffinity=""
@@ -495,6 +507,7 @@
             android:authorities="org.chameleonos.sidebar.contentprovider" >
         </provider>
 
+>>>>>>> 65e4950... App sidebar (1/2)
         <activity android:name=".Somnambulator"
             android:label="@string/start_dreams"
             android:icon="@mipmap/ic_launcher_dreams"
