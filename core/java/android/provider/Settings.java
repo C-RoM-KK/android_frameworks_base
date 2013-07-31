@@ -4366,6 +4366,12 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
 
+         /**
+         * Force dual panel for settings
+         * @hide
+         */
+        public static final String FORCE_DUAL_PANEL = "force_dualpanel";
+
         /**
          * Radius of the blur lockscreen background
          * @hide
