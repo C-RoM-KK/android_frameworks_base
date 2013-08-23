@@ -3023,6 +3023,12 @@ public final class Settings {
         public static final String ALLOW_MULTIUSER = "allow_multiuser";
 
         /**
+         * Configurable LTE or 4G icon - up to per user defined
+         * @hide
+         */
+        public static final String SHOW_LTE_OR_FOURGEE = "show_lte_or_fourgee";
+
+        /**
          * Whether to show the IME switcher in the status bar
          * @hide
          */
