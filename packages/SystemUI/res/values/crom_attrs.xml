@@ -31,4 +31,9 @@
         <attr name="android:scaleType" />
     </declare-styleable>
 
+    <!-- Quick ribbon -->
+    <declare-styleable name="QuickSettingsContainer">
+        <attr name="singleRow" format="boolean" />
+    </declare-styleable>
+
 </resources>
