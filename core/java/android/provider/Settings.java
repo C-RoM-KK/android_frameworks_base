@@ -4405,6 +4405,13 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_NOTIFICATIONS_COLOR = "lockscreen_notifications_color";
 
+	/**
+         * Animate-flip Quick Settings Panel Tiles on click
+         *
+         * @hide
+         */
+        public static final String QUICK_SETTINGS_TILES_FLIP = "quick_settings_tiles_flip";
+
         /**
          * Width and height of output vide expressed in WxH
          * @hide
