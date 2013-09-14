@@ -158,4 +158,7 @@
 
     <!-- Title shown in recents popup for showing app in floating mode -->
     <string name="status_bar_recent_floating_item_title">Floating mode</string>
+
+    <!-- Active display -->
+    <string name="active_display_privacy_content">Content message not showing because privacy mode enabled</string>
 </resources>

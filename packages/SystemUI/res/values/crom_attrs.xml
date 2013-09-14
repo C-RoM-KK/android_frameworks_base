@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 SlimRoms Project
+<!-- Copyright (C) 2014 The C-RoM Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,7 +15,20 @@
 -->
 
 <resources>
+
+    <!-- Battery icon -->
     <declare-styleable name="BatteryIcon">
         <attr name="batteryView" format="string" />
     </declare-styleable>
+
+    <!-- Active display -->
+    <declare-styleable name="RoundedImageView">
+        <attr name="corner_radius" format="dimension" />
+        <attr name="border_width" format="dimension" />
+        <attr name="border_color" format="color" />
+        <attr name="round_background" format="boolean" />
+        <attr name="is_oval" format="boolean" />
+        <attr name="android:scaleType" />
+    </declare-styleable>
+
 </resources>
