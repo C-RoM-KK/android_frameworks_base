@@ -6928,6 +6928,13 @@ public final class Settings {
         public static final String ADVANCED_REBOOT = "advanced_reboot";
 
         /**
+         * Whether to display the 'Wipe data' and 'Force close' options in the notification
+         * area and in the recent app list
+         * @hide
+         */
+        public static final String DEVELOPMENT_SHORTCUT = "development_shortcut";
+
+        /**
          * Default theme to use.  If empty, use holo.
          * @hide
          */
@@ -7005,7 +7012,8 @@ public final class Settings {
             UI_THEME_AUTO_MODE,
             PRIVACY_GUARD_DEFAULT,
             PRIVACY_GUARD_NOTIFICATION,
-            ADVANCED_REBOOT
+            ADVANCED_REBOOT,
+            DEVELOPMENT_SHORTCUT
         };
 
         /**
