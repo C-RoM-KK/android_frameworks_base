@@ -58,6 +58,7 @@ import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.inputmethodservice.InputMethodService;
@@ -1616,6 +1617,18 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
     private void setNotificationPanelHeaderBackground(final Drawable dw) {
         Drawable[] arrayDrawable = new Drawable[2];
+
+        if (dw instanceof BitmapDrawable) {
+            BitmapDrawable bdw = (BitmapDrawable) dw;
+            bdw.setGravity(Gravity.TOP);
+        }
+
+        if (!(dw instanceof BitmapDrawable) &&
+             !(mNotificationPanelHeader.getBackground() instanceof BitmapDrawable) &&
+             !(mNotificationPanelHeader.getBackground() instanceof TransitionDrawable)) {
+            return;
+        }
+
         arrayDrawable[0] = mNotificationPanelHeader.getBackground();
         arrayDrawable[1] = dw;
 
