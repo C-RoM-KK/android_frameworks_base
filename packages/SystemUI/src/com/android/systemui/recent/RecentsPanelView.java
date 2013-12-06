@@ -26,12 +26,14 @@ import android.app.TaskStackBuilder;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.IPackageDataObserver;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -450,7 +452,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         mRecentsNoApps = findViewById(R.id.recents_no_apps);
 
         mClearRecents = (ImageView) findViewById(R.id.recents_clear);
-        if (mClearRecents != null){
+        if (mClearRecents != null) {
             mClearRecents.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -833,5 +835,22 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             bottom += getBottomPaddingOffset();
         }
         mRecentsContainer.drawFadedEdges(canvas, left, right, top, bottom);
+    }
+
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        if (mClearRecents != null) {
+            MarginLayoutParams lp = (MarginLayoutParams) mClearRecents.getLayoutParams();
+            lp.topMargin = insets.top;
+            lp.rightMargin = insets.right;
+            mClearRecents.setLayoutParams(lp);
+        }
+
+        return super.fitSystemWindows(insets);
+    }
+
+    class FakeClearUserDataObserver extends IPackageDataObserver.Stub {
+        public void onRemoveCompleted(final String packageName, final boolean succeeded) {
+        }
     }
 }
