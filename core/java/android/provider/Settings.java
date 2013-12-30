@@ -4487,12 +4487,6 @@ public final class Settings {
         public static final String NETWORK_TRAFFIC_STATE = "network_traffic_state";
 
         /**
-         * Show the pending notification counts as overlays on the status bar
-         * @hide
-         */
-        public static final String STATUS_BAR_NOTIFICATION_COUNT = "status_bar_notification_count";
-
-        /**
          * Whether to show the signal text or signal bars
          * @hide
          */
@@ -4503,6 +4497,12 @@ public final class Settings {
          * @hide
          */
         public static final String STATUS_BAR_NOTIFICATION_COUNT = "status_bar_notification_count";
+
+        /**
+         * Whether to show the signal text or signal bars
+         * @hide
+         */
+        public static final String STATUS_BAR_SIGNAL_TEXT = "status_bar_signal";
 
         /**
          *  Enable statusbar double tap gesture on to put device to sleep
