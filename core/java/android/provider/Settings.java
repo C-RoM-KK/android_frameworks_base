@@ -3642,6 +3642,18 @@ public final class Settings {
         public static final String LOCKSCREEN_QUICK_UNLOCK_CONTROL =
                 "lockscreen_quick_unlock_control";
 
+       /**
+         * show clear all recents button
+         *  @hide
+         */
+        public static final String SHOW_CLEAR_RECENTS_BUTTON = "clear_recents_button";
+
+        /**
+         * location of the clear all rectents button
+         * @hide
+         */
+        public static final String CLEAR_RECENTS_BUTTON_LOCATION = "clear_recents_button_location";
+
         /**
          * Whether incomming call UI stays in background
          *
