@@ -3058,6 +3058,12 @@ public final class Settings {
          */
         public static final String SHOW_LTE_OR_FOURGEE = "show_lte_or_fourgee";
 
+        /**
+	*
+	* SMOOTH PROGRESS BAR interpolator
+	* @hide
+	*/
+        public static final String PROGRESSBAR_INTERPOLATOR = "progressbar_interpolator";
 
 	/**
 	*
