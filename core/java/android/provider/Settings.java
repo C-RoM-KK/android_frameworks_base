@@ -3930,6 +3930,12 @@ public final class Settings {
         public static final String MENU_UNLOCK_SCREEN = "menu_unlock_screen";
 
         /**
+         * Alt Activity Resolver Grid
+         * @hide
+         */
+        public static final String ACTIVITY_RESOLVER_USE_ALT = "activity_resolver_use_alt";
+
+        /**
          * Whether recent panel gravity is left or right (default = Gravity.RIGHT).
          * @hide
          */
