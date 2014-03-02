@@ -74,10 +74,12 @@ import com.android.systemui.statusbar.phone.PhoneStatusBar;
 
 import com.android.internal.util.MemInfoReader;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.io.OutputStreamWriter;
 
 public class RecentsPanelView extends FrameLayout implements OnItemClickListener, RecentsCallback,
         StatusBarPanel, Animator.AnimatorListener {
@@ -104,7 +106,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
     private int mRecentItemLayoutId;
     private boolean mHighEndGfx;
     private ImageView mClearRecents;
-
     private LinearColorBar mRamUsageBar;
 
     private long mFreeMemory;
@@ -498,7 +499,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
         mRecentsScrim = findViewById(R.id.recents_bg_protect);
         mRecentsNoApps = findViewById(R.id.recents_no_apps);
-        
+
         mClearRecents = (ImageView) findViewById(R.id.recents_clear);
         if (mClearRecents != null) {
             mClearRecents.setOnClickListener(new OnClickListener() {
@@ -508,6 +509,25 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                 }
             });
         }
+
+        mClearRecents.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mRecentsContainer.removeAllViewsInLayout();
+                try {
+                    ProcessBuilder pb = new ProcessBuilder("su", "-c", "/system/bin/sh");
+                    OutputStreamWriter osw = new OutputStreamWriter(pb.start().getOutputStream());
+                    osw.write("sync" + "\n" + "echo 3 > /proc/sys/vm/drop_caches" + "\n");
+                    osw.write("\nexit\n");
+                    osw.flush();
+                    osw.close();
+                } catch (Exception e) {
+                    Log.d(TAG, "Flush caches failed!");
+                }
+
+                return true;
+            }
+        });
 
         if (mRecentsScrim != null) {
             mHighEndGfx = ActivityManager.isHighEndGfx();
@@ -946,7 +966,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             mRamText.setText(getResources().getString(
                     R.string.memory));
             float totalMem = mTotalMemory;
-            float totalShownMem = (mTotalMemory - mFreeMemory - mCachedMemory -  mActiveMemory)/ totalMem;
+            float totalShownMem = (mTotalMemory - mFreeMemory - mCachedMemory - mActiveMemory)/ totalMem;
             float totalActiveMem = mActiveMemory / totalMem;
             float totalCachedMem = mCachedMemory / totalMem;
             mRamUsageBar.setRatios(totalShownMem, totalCachedMem, totalActiveMem);
@@ -978,7 +998,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     Intent intent = new Intent();
                     intent.setComponent(new ComponentName(
                             "com.android.settings",
-                            "com.android.settings.Settings$ASSRamBarActivity"));
+                            "com.android.settings.Settings$RamBarActivity"));
 
                     try {
                         // Dismiss the lock screen when Settings starts.
@@ -1044,7 +1064,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             }
         } catch (IOException e) {}
         mCachedMemory = result;
-
     }
 
     private static String readLine(String filename, int line) throws IOException {
