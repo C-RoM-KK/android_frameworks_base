@@ -4882,6 +4882,12 @@ public final class Settings {
          */
         public static final String POWER_MENU_USER_ENABLED = "power_menu_user_enabled";
 
+       /**
+         * Show the pending notification counts as overlays on the status bar
+         * @hide
+         */
+        public static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
+
          /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
@@ -4962,6 +4968,7 @@ public final class Settings {
             QUIET_HOURS_STILL,
             QUIET_HOURS_DIM,
             LOCKSCREEN_ALWAYS_SHOW_BATTERY,
+            SYSTEM_PROFILES_ENABLED,
         };
 
         // Settings moved to Settings.Secure
