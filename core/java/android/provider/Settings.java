@@ -3976,6 +3976,13 @@ public final class Settings {
          */
         public static final String ACTIVE_DISPLAY_SHOW_AMPM = "active_display_show_ampm";
 
+       /**
+         * Custom Recent toggle
+         *
+         * @hide
+         */
+        public static final String CUSTOM_RECENT_TOGGLE = "custom_recent_toggle";
+
         /**
          * Whether to display the date above the time
          * @hide
