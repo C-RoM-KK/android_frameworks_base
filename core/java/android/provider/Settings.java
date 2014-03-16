@@ -3725,6 +3725,12 @@ public final class Settings {
         */
         public static final String NOTIFICATION_ALPHA = "notification_alpha";
 
+       /**
+         *
+         * @hide
+         */
+        public static final String SMART_PHONE_CALLER = "smart_phone_caller";
+
         /**
          * Navigation bar button color
          * @hide
