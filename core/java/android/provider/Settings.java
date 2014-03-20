@@ -4817,6 +4817,12 @@ public final class Settings {
         public static final String SWAP_VOLUME_KEYS_ON_ROTATION = "swap_volume_keys_on_rotation";
 
         /**
+         * Defines the custom path to use for UI sound effects (null for default)
+         * @hide
+         */
+        public static final String CUSTOM_SOUND_EFFECTS_PATH = "custom_sound_effects_path";
+
+        /**
          * Whether wifi settings will connect to access point automatically when
          * network from mobile network transform to Wifi network
          * 0 = automatically
