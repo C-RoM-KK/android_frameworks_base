@@ -1157,6 +1157,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         updateShowSearchHoldoff();
 
+<<<<<<< HEAD
         if (!mRecreating) {
             if (mNavigationBarView == null) {
                 mNavigationBarView =
@@ -1173,6 +1174,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     return false;
                 }
             });
+=======
+        if (mRecreating) {
+            removeSidebarView();
+        } else {
+            updateActiveDisplayViewState();
+            addAppCircleSidebar();
+            /* ChaosLab: GestureAnywhere - BEGIN */
+            addGestureAnywhereView();
+            /* ChaosLab: GestureAnywhere - END */
+>>>>>>> c801424... [1/2] Base: implement App circle sidebar
         }
 
         // Setup pie container if enabled
@@ -1180,9 +1191,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         if (!mRecreating) {
             addActiveDisplayView();
-            addAppCircleSidebar();
             addGestureAnywhereView();
-
         }
 
         // figure out which pixel-format to use for the status bar.
