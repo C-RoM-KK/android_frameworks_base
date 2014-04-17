@@ -34,6 +34,7 @@ import android.os.RemoteException;
 import android.os.UserHandle;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
@@ -126,14 +127,30 @@ public class QuickSettingsTile implements OnClickListener {
         if (tv != null) {
             tv.setVisibility(View.GONE);
         }
+        // Image margins are set by the controller, so no need to set them here
+    }
+
+    public void setImageMargins(int margin) {
         View image = mTile.findViewById(R.id.image);
         if (image != null) {
             MarginLayoutParams params = (MarginLayoutParams) image.getLayoutParams();
-            int margin = mContext.getResources().getDimensionPixelSize(
-                    R.dimen.qs_tile_ribbon_icon_margin);
             params.topMargin = params.bottomMargin = margin;
             image.setLayoutParams(params);
         }
+    }
+
+    public void switchToSmallIcons() {
+        TextView tv = (TextView) mTile.findViewById(R.id.text);
+        if (tv != null) {
+            tv.setText(mLabel);
+            tv.setTextSize(mTileTextSize);
+            int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
+            if (dpi > DisplayMetrics.DENSITY_HIGH) {
+                tv.setPadding(0, mTileTextPadding, 0, 0);
+            }
+        }
+        setImageMargins(mContext.getResources().getDimensionPixelSize(
+                R.dimen.qs_tile_ribbon_icon_margin_big));
     }
 
     void onPostCreate() {}
