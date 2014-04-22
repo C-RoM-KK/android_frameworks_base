@@ -22,6 +22,7 @@ import static com.android.internal.util.slim.QSConstants.TILE_AIRPLANE;
 import static com.android.internal.util.slim.QSConstants.TILE_ALARM;
 import static com.android.internal.util.slim.QSConstants.TILE_AUTOROTATE;
 import static com.android.internal.util.slim.QSConstants.TILE_BATTERY;
+import static com.android.internal.util.slim.QSConstants.TILE_BATTERYSAVER;
 import static com.android.internal.util.slim.QSConstants.TILE_BLUETOOTH;
 import static com.android.internal.util.slim.QSConstants.TILE_BRIGHTNESS;
 import static com.android.internal.util.slim.QSConstants.TILE_BUGREPORT;
@@ -79,6 +80,7 @@ import com.android.systemui.quicksettings.AirplaneModeTile;
 import com.android.systemui.quicksettings.AlarmTile;
 import com.android.systemui.quicksettings.AutoRotateTile;
 import com.android.systemui.quicksettings.BatteryTile;
+import com.android.systemui.quicksettings.BatterySaverTile;
 import com.android.systemui.quicksettings.BluetoothTile;
 import com.android.systemui.quicksettings.BrightnessTile;
 import com.android.systemui.quicksettings.BugReportTile;
@@ -274,6 +276,8 @@ public class QuickSettingsController {
                 qs = new OnTheGoTile(mContext, this);
             } else if (tile.contains(TILE_FCHARGE)) {
                 qs = new FastChargeTile(mContext, this);
+            } else if (tile.equals(TILE_BATTERYSAVER)) {
+                qs = new BatterySaverTile(mContext, this);
             }
 
             if (qs != null) {
