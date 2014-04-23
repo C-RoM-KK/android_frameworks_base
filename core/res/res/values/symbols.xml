@@ -1825,4 +1825,7 @@
   <java-symbol type="bool" name="spb_default_reversed" />
   <java-symbol type="bool" name="spb_default_mirror_mode" />
   <java-symbol type="bool" name="spb_default_progressiveStart_activated" />
+
+  <!-- Download Icon -->
+  <java-symbol type="drawable" name="stat_sys_downloadicon" />
 </resources>
