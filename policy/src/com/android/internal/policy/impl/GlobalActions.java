@@ -38,6 +38,7 @@ import android.content.pm.UserInfo;
 import android.database.ContentObserver;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.Manifest;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
@@ -351,6 +352,25 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     });
             // screenshot
             } else if (config.getClickAction().equals(PolicyConstants.ACTION_SCREENSHOT)) {
+                mItems.add(
+                    new SinglePressAction(PolicyHelper.getPowerMenuIconImage(mContext,
+                            config.getClickAction(), config.getIcon(), true),
+                            config.getClickActionDescription()) {
+                        public void onPress() {
+                            SlimActions.processAction(
+                                mContext, config.getClickAction(), false);
+                        }
+
+                        public boolean showDuringKeyguard() {
+                            return true;
+                        }
+                        public boolean showBeforeProvisioning() {
+                            return true;
+                        }
+                    });
+
+            // screen record
+            } else if (config.getClickAction().equals(PolicyConstants.ACTION_SCREEN_RECORD)) {
                 mItems.add(
                     new SinglePressAction(PolicyHelper.getPowerMenuIconImage(mContext,
                             config.getClickAction(), config.getIcon(), true),

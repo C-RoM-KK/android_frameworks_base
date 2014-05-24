@@ -38,6 +38,7 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.InputDevice;
+import android.Manifest;
 import android.view.IWindowManager;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -241,6 +242,10 @@ public class SlimActions {
                     barService.toggleScreenshot();
                 } catch (RemoteException e) {
                 }
+                return;
+            } else if (action.equals(ButtonsConstants.ACTION_SCREEN_RECORD)) {
+                final Intent recordIntent = new Intent("org.chameleonos.action.NOTIFY_RECORD_SERVICE");
+                context.sendBroadcast(recordIntent, Manifest.permission.RECORD_SCREEN);
                 return;
             } else if (action.equals(ButtonsConstants.ACTION_NOTIFICATIONS)) {
                 if (isKeyguardShowing && isKeyguardSecure) {
