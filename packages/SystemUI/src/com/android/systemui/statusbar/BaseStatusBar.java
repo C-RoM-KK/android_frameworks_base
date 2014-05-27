@@ -236,6 +236,10 @@ public abstract class BaseStatusBar extends SystemUI implements
         return mDeviceProvisioned;
     }
 
+     public int getNotificationCount() {
+          return mNotificationData.size();
+      }
+
     public NotificationData getNotifications() {
         return mNotificationData;
     }
