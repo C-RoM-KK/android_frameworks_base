@@ -125,6 +125,10 @@ public class CromSeekBarPreference extends Preference
         mIsMilliSeconds = millis;
     }
 
+    public void setMax(int max) {
+        bar.setMax(max);
+    }
+
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
 
