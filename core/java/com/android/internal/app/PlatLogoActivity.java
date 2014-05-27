@@ -81,7 +81,7 @@ public class PlatLogoActivity extends Activity {
         letter.setTextSize(300);
         letter.setTextColor(0xFFFFFFFF);
         letter.setGravity(Gravity.CENTER);
-        letter.setText(mIsCrom ? "C-RoM" : "C-RoM");
+        letter.setText(mIsCrom ? "CR" : "CR");
 
         final int p = (int)(4 * metrics.density);
 
