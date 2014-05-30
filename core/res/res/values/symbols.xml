@@ -1819,4 +1819,9 @@
   <java-symbol type="color" name="holo_green_dark" />
   <java-symbol type="color" name="holo_purple_dark" />
   <java-symbol type="color" name="holo_red_dark" />
+
+  <!-- SmoothProgressBar -->
+  <java-symbol type="bool" name="spb_default_reversed" />
+  <java-symbol type="bool" name="spb_default_mirror_mode" />
+  <java-symbol type="bool" name="spb_default_progressiveStart_activated" />
 </resources>
