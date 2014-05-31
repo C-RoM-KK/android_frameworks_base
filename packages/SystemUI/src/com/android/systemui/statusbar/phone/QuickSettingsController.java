@@ -25,7 +25,7 @@ import static com.android.internal.util.slim.QSConstants.TILE_BATTERY;
 import static com.android.internal.util.slim.QSConstants.TILE_BLUETOOTH;
 import static com.android.internal.util.slim.QSConstants.TILE_BRIGHTNESS;
 import static com.android.internal.util.slim.QSConstants.TILE_BUGREPORT;
-import static com.android.internal.util.mahdi.QSConstants.TILE_COMPASS;
+import static com.android.internal.util.slim.QSConstants.TILE_COMPASS;
 import static com.android.internal.util.slim.QSConstants.TILE_CONTACT;
 import static com.android.internal.util.slim.QSConstants.TILE_CUSTOM;
 import static com.android.internal.util.slim.QSConstants.TILE_CUSTOM_KEY;
