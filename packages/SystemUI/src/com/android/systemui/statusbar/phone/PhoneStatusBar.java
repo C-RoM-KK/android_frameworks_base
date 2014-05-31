@@ -3946,6 +3946,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     };
 
     private View.OnClickListener mDateClickListener = new View.OnClickListener() {
+        public void onClick(View v) {
             Intent calendarShortcutIntent = null;
             String calendarShortcutIntentUri = Settings.System.getStringForUser(
                     mContext.getContentResolver(), Settings.System.CALENDAR_SHORTCUT, UserHandle.USER_CURRENT);
