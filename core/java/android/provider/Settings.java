@@ -4654,6 +4654,14 @@ public final class Settings {
          */
         public static final String ON_THE_GO_SERVICE_RESTART = "on_the_go_service_restart";
 
+        /**
+         * Whether wifi settings will connect to access point automatically
+         * 0 = automatically
+         * 1 = manually
+         * @hide
+         */
+        public static final String WIFI_AUTO_CONNECT_TYPE = "wifi_auto_connect_type";
+
          /**
          * Swap volume buttons when the screen is rotated
          * 0 - Disabled
