@@ -2302,7 +2302,6 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
 
         if (child.getImportantForAccessibility() == IMPORTANT_FOR_ACCESSIBILITY_AUTO) {
             child.setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
-            }
         }
 
         if (mAdapterHasStableIds) {
