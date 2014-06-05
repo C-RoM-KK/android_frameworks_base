@@ -667,7 +667,6 @@ class BluetoothManagerService extends IBluetoothManager.Stub {
                 }
                 case MESSAGE_SAVE_NAME_AND_ADDRESS: {
                     boolean unbind = false;
-                    boolean waitonofftimeout = false;
                     if (DBG) Log.d(TAG,"MESSAGE_SAVE_NAME_AND_ADDRESS");
                     synchronized(mConnection) {
                         if (!mEnable && mBluetooth != null) {
@@ -723,10 +722,8 @@ class BluetoothManagerService extends IBluetoothManager.Stub {
                             mHandler.sendMessage(getMsg);
                         }
                     }
-                    if (!mEnable && mBluetooth != null) {
-                        waitonofftimeout = waitForOnOff(false, true);
-                    }
-                    if (unbind && waitonofftimeout) {
+                    if (!mEnable && mBluetooth != null) waitForOnOff(false, true);
+                    if (unbind) {
                         unbindAndFinish();
                     }
                     break;
