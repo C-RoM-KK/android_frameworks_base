@@ -60,7 +60,6 @@ public final class  BluetoothLwPwrProximityMonitor implements QBluetoothAdapter.
     /* This timer is triggered in case that BluetoothGatt does not callback when we perform connect/disconnect */
     private Timer     mTimer = null;
     private final int mTimeOutValue = 30*1000;
-    public boolean isWriteThresholdNeedToBeCalled = false;
     private final class ConnectTimeOutTask extends TimerTask {
         public void run() {
             if (DBG) Log.d(TAG, "connect timer triggered!");
@@ -140,9 +139,8 @@ public final class  BluetoothLwPwrProximityMonitor implements QBluetoothAdapter.
                         stop = true;
                     }
                 } else if (newState == BluetoothProfile.STATE_CONNECTED) {
-                    if (mState == MONITOR_STATE_STARTING && isWriteThresholdNeedToBeCalled) {
+                    if (mState == MONITOR_STATE_STARTING) {
                         if (status == BluetoothGatt.GATT_SUCCESS) {
-                            isWriteThresholdNeedToBeCalled = false;
                             if(!mQAdapter.writeRssiThreshold(BluetoothLwPwrProximityMonitor.this, mLowerLimit, mUpperLimit)) {
                                 mGattProfile.disconnect();
                                 mState = MONITOR_STATE_STOPPING;
@@ -152,10 +150,6 @@ public final class  BluetoothLwPwrProximityMonitor implements QBluetoothAdapter.
                             mState = MONITOR_STATE_IDLE;
                             stop = true;
                         }
-                    }
-                    if (status != BluetoothGatt.GATT_SUCCESS) {
-                        mState = MONITOR_STATE_IDLE;
-                        stop = true;
                     }
                 }
             }
@@ -212,7 +206,6 @@ public final class  BluetoothLwPwrProximityMonitor implements QBluetoothAdapter.
     /** @hide */
     public boolean start (int thresh_min, int thresh_max) {
         if (DBG) Log.d(TAG, "start() low=" + thresh_min + ", upper=" + thresh_max);
-        isWriteThresholdNeedToBeCalled = true;
         synchronized(mStateLock){
             if (mState != MONITOR_STATE_IDLE) {
                 if (DBG) Log.d(TAG, "start() invalid state, monitor is not idle");
@@ -239,16 +232,6 @@ public final class  BluetoothLwPwrProximityMonitor implements QBluetoothAdapter.
                         mQAdapter.registerLppClient(this, mDevice.getAddress(), false);
                         mState = MONITOR_STATE_IDLE;
                         return false;
-                    }
-                    else {
-                        if (mState == MONITOR_STATE_STARTING && isWriteThresholdNeedToBeCalled) {
-                            isWriteThresholdNeedToBeCalled = false;
-                            if(!mQAdapter.writeRssiThreshold(BluetoothLwPwrProximityMonitor.this, mLowerLimit, mUpperLimit)) {
-                                mGattProfile.disconnect();
-                                mState = MONITOR_STATE_STOPPING;
-                                setTimer(BluetoothLwPwrProximityMonitor.this.new DisconnectTimeOutTask(), mTimeOutValue);
-                            }
-                        }
                     }
                 }
             } catch (IllegalStateException e) {
