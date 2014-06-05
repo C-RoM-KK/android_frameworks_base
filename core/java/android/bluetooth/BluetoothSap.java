@@ -120,7 +120,6 @@ public final class BluetoothSap implements BluetoothProfile {
         synchronized (mConnection) {
             if ( mSapService != null) {
                 try {
-                    mSapService.cleanup();
                     mSapService = null;
                     mContext.unbindService(mConnection);
                 } catch (Exception re) {
@@ -151,7 +150,6 @@ public final class BluetoothSap implements BluetoothProfile {
                 synchronized (mConnection) {
                     if ( mSapService != null) {
                         try {
-                            mSapService.cleanup();
                             mSapService = null;
                             mContext.unbindService(mConnection);
                         } catch (Exception re) {
