@@ -84,6 +84,10 @@
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
 
+    <!-- Development shortcut -->
+    <uses-permission android:name="android.permission.CLEAR_APP_USER_DATA" />
+    <uses-permission android:name="android.permission.FORCE_STOP_PACKAGES" />
+
     <!-- Reboot -->
     <uses-permission android:name="android.permission.REBOOT" />
 
@@ -92,12 +96,6 @@
 
     <!-- Active display -->
     <uses-permission android:name="android.permission.SYSTEM_NOTIFICATION_LISTENER" />
-
-    <!-- DownloadProvider -->
-    <uses-permission android:name="android.permission.ACCESS_ALL_DOWNLOADS" />
-
-    <!-- Development shortcut -->
-    <uses-permission android:name="android.permission.CLEAR_APP_USER_DATA" />
 
     <application
         android:persistent="true"

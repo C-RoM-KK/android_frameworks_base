@@ -587,7 +587,7 @@ public abstract class BaseStatusBar extends SystemUI implements
                         if ((mAppInfo.flags&(ApplicationInfo.FLAG_SYSTEM
                               | ApplicationInfo.FLAG_ALLOW_CLEAR_USER_DATA))
                               == ApplicationInfo.FLAG_SYSTEM
-                             || mDpm.packageHasActiveAdmins(packageNameF)) {
+                              || mDpm.packageHasActiveAdmins(packageNameF)) {
                             mNotificationBlamePopup.getMenu()
                             .findItem(R.id.notification_inspect_item_wipe_app).setEnabled(false);
                         }
@@ -596,10 +596,14 @@ public abstract class BaseStatusBar extends SystemUI implements
                     }
                 }
 
-                mNotificationBlamePopup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                mNotificationBlamePopup
+                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     public boolean onMenuItemClick(MenuItem item) {
                         if (item.getItemId() == R.id.notification_inspect_item) {
                             startApplicationDetailsActivity(packageNameF);
+                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
+                        } else if (item.getItemId() == R.id.notification_floating_item) {
+                            launchFloating(contentIntent);
                             animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else if (item.getItemId() == R.id.notification_inspect_item_force_stop) {
                             ActivityManager am = (ActivityManager) mContext
@@ -611,20 +615,10 @@ public abstract class BaseStatusBar extends SystemUI implements
                                     .getSystemService(Context.ACTIVITY_SERVICE);
                             am.clearApplicationUserData(packageNameF,
                                     new FakeClearUserDataObserver());
-                        } else if (item.getItemId() == R.id.notification_floating_item) {
-                            launchFloating(contentIntent);
-                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else {
                             return false;
                         }
                         return true;
-                    }
-                });
-
-                mNotificationBlamePopup.setOnDismissListener(new PopupMenu.OnDismissListener() {
-                    @Override
-                    public void onDismiss(PopupMenu popupMenu) {
-                        mNotificationBlamePopup = null;
                     }
                 });
 
@@ -644,7 +638,7 @@ public abstract class BaseStatusBar extends SystemUI implements
 
     class FakeClearUserDataObserver extends IPackageDataObserver.Stub {
         public void onRemoveCompleted(final String packageName, final boolean succeeded) {
-        }
+       }
     }
 
     public void dismissPopups() {
