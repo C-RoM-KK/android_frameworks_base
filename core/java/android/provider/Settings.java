@@ -6928,7 +6928,6 @@ public final class Settings {
         public static final String ADVANCED_REBOOT = "advanced_reboot";
 
         /**
-<<<<<<< HEAD
          * Default theme to use.  If empty, use holo.
          * @hide
          */
@@ -6952,13 +6951,6 @@ public final class Settings {
          */
         public static final String DEFAULT_THEME_APPLIED_ON_FIRST_BOOT =
                 "default_theme_applied_on_first_boot";
-=======
-         * Whether to display the 'Wipe data' and 'Force close' options in the notification
-         * area and in the recent app list
-         * @hide
-         */
-        public static final String DEVELOPMENT_SHORTCUT = "development_shortcut";
->>>>>>> 7598ec2... Development shortcut in StatusBar and Recent Panel
 
         /**
          * This are the settings to be backed up.
@@ -7013,8 +7005,7 @@ public final class Settings {
             UI_THEME_AUTO_MODE,
             PRIVACY_GUARD_DEFAULT,
             PRIVACY_GUARD_NOTIFICATION,
-            ADVANCED_REBOOT,
-            DEVELOPMENT_SHORTCUT
+            ADVANCED_REBOOT
         };
 
         /**
