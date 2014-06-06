@@ -20,6 +20,7 @@ package android.bluetooth;
 
 import android.annotation.SdkConstant;
 import android.annotation.SdkConstant.SdkConstantType;
+import android.app.ActivityThread;
 import android.content.Context;
 import android.os.Binder;
 import android.os.Handler;
