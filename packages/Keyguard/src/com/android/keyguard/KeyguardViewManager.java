@@ -505,7 +505,7 @@ public class KeyguardViewManager {
         }
 
         public boolean shouldShowWallpaper() {
-            return mUserBackground == null && mBlurredImage == null;
+            return mUserBackground == null;
         }
     }
 
