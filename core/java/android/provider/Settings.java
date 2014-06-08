@@ -4701,29 +4701,6 @@ public final class Settings {
         public static final String RECENT_PANEL_SHOW_TOPMOST = "recent_panel_show_topmost";
 
         /**
-         * The alpha value of the On-The-Go overlay.
-         *
-         * @hide
-         */
-        public static final String ON_THE_GO_ALPHA = "on_the_go_alpha";
-
-        /**
-         * The camera instance to use.
-         * 0 = Rear Camera
-         * 1 = Front Camera
-         *
-         * @hide
-         */
-        public static final String ON_THE_GO_CAMERA = "on_the_go_camera";
-
-        /**
-         * Whether the service should restart itself or not.
-         *
-         * @hide
-         */
-        public static final String ON_THE_GO_SERVICE_RESTART = "on_the_go_service_restart";
-
-        /**
          * Whether wifi settings will connect to access point automatically
          * 0 = automatically
          * 1 = manually
