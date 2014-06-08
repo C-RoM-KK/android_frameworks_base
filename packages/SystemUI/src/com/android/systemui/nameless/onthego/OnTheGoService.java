@@ -46,7 +46,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import com.android.internal.util.nameless.NamelessUtils;
-import com.android.internal.util.nameless.constants.FlashLightConstants;
+import com.android.internal.util.slim.TorchConstants;
 import com.android.internal.util.nameless.listeners.ShakeDetector;
 import com.android.systemui.R;
 
@@ -489,7 +489,7 @@ public class OnTheGoService extends Service implements ShakeDetector.Listener {
     public void hearShake() {
         synchronized (mShakeLock) {
             if (!mIsShakeLocked) {
-                final Intent intent = new Intent(FlashLightConstants.ACTION_TOGGLE_STATE);
+                final Intent intent = new Intent(TorchConstants.ACTION_TOGGLE_STATE);
                 sendBroadcastAsUser(intent, UserHandle.CURRENT);
                 mIsShakeLocked = true;
                 mHandler.postDelayed(new Runnable() {
