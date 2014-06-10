@@ -1116,9 +1116,14 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
 
             case MSG_TIMEOUT: {
                 if (mDialog.isShowing()) {
-                    applyTranslucentWindow();
-                    mDialog.dismiss();
-                    mActiveStreamType = -1;
+                    mView.animate().y(-mView.getHeight()).setDuration(ANIMATION_DURATION).withEndAction(new Runnable() {
+                        public void run() {
+                            sendIntent(ACTION_VOLUMEPANEL_HIDDEN);
+                            applyTranslucentWindow();
+                            mDialog.dismiss();
+                            mActiveStreamType = -1;
+                        }
+                    });
                 }
                 synchronized (sConfirmSafeVolumeLock) {
                     if (sConfirmSafeVolumeDialog != null) {
@@ -1220,7 +1225,6 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
 
         mPanel.getBackground().setAlpha(TRANSLUCENT_START_LEVEL);
         mMoreButton.setAlpha(TRANSLUCENT_START_LEVEL);
-        mDivider.setAlpha(TRANSLUCENT_START_LEVEL);
         mShouldRunDropTranslucentAnimation = true;
     }
 
@@ -1233,8 +1237,6 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
                 mPanel.getBackground(), "alpha", mPanel.getBackground().getAlpha(), 255);
         Animator moreAlpha = ObjectAnimator.ofFloat(
                 mMoreButton, "alpha", mMoreButton.getAlpha(), 255);
-        Animator dividerAlpha = ObjectAnimator.ofFloat(
-                mDivider, "alpha", mDivider.getAlpha(), 255);
         set.setInterpolator(new AccelerateInterpolator());
         set.addListener(new AnimatorListener() {
             @Override
@@ -1253,7 +1255,7 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
             public void onAnimationCancel(Animator animation) {}
         });
         set.setDuration(TRANSLUCENT_TO_OPAQUE_DURATION);
-        set.playTogether(panelAlpha, moreAlpha, dividerAlpha);
+        set.playTogether(panelAlpha, moreAlpha);
         set.start();
     }
 }
