@@ -84,7 +84,6 @@ public class NotificationHelper {
 
     private BaseStatusBar mStatusBar;
     private Context mContext;
-    private Hover mHover;
     private IntentFilter mPeekAppFilter;
     private Peek mPeek;
     private Hover mHover;
