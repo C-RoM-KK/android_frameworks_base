@@ -450,9 +450,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         SidebarObserver observer = new SidebarObserver(mHandler);
         observer.observe();
 
-        SettingsObserver settingsObserver = new SettingsObserver(new Handler());
-        settingsObserver.observe();
-
         mContext.getContentResolver().registerContentObserver(
                 Settings.System.getUriFor(Settings.System.HOVER_STATE),
                         false, new ContentObserver(new Handler()) {
