@@ -449,7 +449,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         mContext.registerReceiver(mBroadcastReceiver, filter);
         SidebarObserver observer = new SidebarObserver(mHandler);
         observer.observe();
-    }
 
         SettingsObserver settingsObserver = new SettingsObserver(new Handler());
         settingsObserver.observe();
