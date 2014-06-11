@@ -87,6 +87,8 @@ public class NotificationHelper {
     private Hover mHover;
     private IntentFilter mPeekAppFilter;
     private Peek mPeek;
+    private Hover mHover;
+    private ActivityManager mActivityManager;
     private PeekAppReceiver mPeekAppReceiver;
     private TelephonyManager mTelephonyManager;
 
