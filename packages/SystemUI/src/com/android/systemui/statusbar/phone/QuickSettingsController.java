@@ -61,6 +61,7 @@ import static com.android.internal.util.slim.QSConstants.TILE_REBOOT;
 import static com.android.internal.util.slim.QSConstants.TILE_ONTHEGO;
 import static com.android.internal.util.slim.QSConstants.TILE_HOVER;
 import static com.android.internal.util.slim.QSConstants.TILE_PROFILE;
+import static com.android.internal.util.slim.QSConstants.TILE_SCREENSHOT;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -121,6 +122,7 @@ import com.android.systemui.quicksettings.RebootTile;
 import com.android.systemui.quicksettings.OnTheGoTile;
 import com.android.systemui.quicksettings.HoverTile;
 import com.android.systemui.quicksettings.ProfileTile;
+import com.android.systemui.quicksettings.ScreenshotTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -282,6 +284,8 @@ public class QuickSettingsController {
                 qs = new ContactTile(mContext, this, findCustomKey(tile));
             } else if (tile.contains(TILE_FCHARGE)) {
                 qs = new FastChargeTile(mContext, this);
+            } else if (tile.equals(TILE_SCREENSHOT)) {
+                qs = new ScreenshotTile(mContext, this, mHandler);
             } else if (tile.equals(TILE_BATTERYSAVER)) {
                 qs = new BatterySaverTile(mContext, this);
             } else if (tile.contains(TILE_ONTHEGO)) {
