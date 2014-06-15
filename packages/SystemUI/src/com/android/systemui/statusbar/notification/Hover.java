@@ -639,7 +639,7 @@ public class Hover {
             final boolean isStatusBarVisible = (vis & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0
                     || (vis & View.STATUS_BAR_TRANSIENT) != 0;
             if (isStatusBarVisible)
-                alowed = false;
+                allowed = false;
         }
 
         //Exclude non-clearable
