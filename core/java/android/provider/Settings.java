@@ -4848,6 +4848,13 @@ public final class Settings {
         public static final String HOVER_EXCLUDE_LOW_PRIORITY = "hover_exclude_low_priority";
 
         /**
+         * Hover: Option to exclude topmost app, default is 1 (on).
+         *
+         * @hide
+         */
+        public static final String HOVER_EXCLUDE_TOPMOST = "hover_exclude_topmost";
+
+        /**
          * Whether to not showing active display when there is annoying notifications.
          * Set the timeout of peek when pikcing up the device
          * @hide
