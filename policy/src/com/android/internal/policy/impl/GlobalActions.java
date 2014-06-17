@@ -424,13 +424,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     });
 
         // next: profile - only shown if enabled, which is true by default
-        if (config.getClickAction().equals(PolicyConstants.ACTION_PROFILES)) {
+        if (Settings.System.getInt(mContext.getContentResolver(), SYSTEM_PROFILES_ENABLED, 1) == 1) {
             mItems.add(
                 new ProfileChooseAction() {
                     public void onPress() {
-                            if (Settings.System.getInt(mContext.getContentResolver(), SYSTEM_PROFILES_ENABLED, 1) == 1) {
-                                createProfileDialog();
-                            }
+                        createProfileDialog();
                     }
 
                     public boolean onLongPress() {
