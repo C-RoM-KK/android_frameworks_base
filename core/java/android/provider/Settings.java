@@ -4848,6 +4848,13 @@ public final class Settings {
         public static final String HOVER_EXCLUDE_TOPMOST = "hover_exclude_topmost";
 
         /**
+         * Hover: long fade out delay, default is 5000ms (5s).
+         *
+         * @hide
+         */
+        public static final String HOVER_LONG_FADE_OUT_DELAY = "hover_long_fade_out_delay";
+
+        /**
          * Whether to not showing active display when there is annoying notifications.
          * Set the timeout of peek when pikcing up the device
          * @hide
