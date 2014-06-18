@@ -4039,18 +4039,8 @@ public class PackageManagerService extends IPackageManager.Stub {
             final int pkgsSize = pkgs.size();
             ExecutorService executorService = Executors.newFixedThreadPool(sNThreads);
             final long start = System.currentTimeMillis();
-            PackageManager pm = null;;
-            if (mContext != null)
-                pm = mContext.getPackageManager();
-            String n = null;
             for (PackageParser.Package pkg : pkgs) {
                 final PackageParser.Package p = pkg;
-                if (pm != null)
-                    n = (String)p.applicationInfo.loadLabel(pm);
-                if (n == null || n.length() == 0)
-                    n = p.packageName;
-                final String name = "\n"+n;
-                n = null;
                 synchronized (mInstallLock) {
                     if (!p.mDidDexOpt) {
                         executorService.submit(new Runnable() {
@@ -4058,7 +4048,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                             public void run() {
                                 if (!isFirstBoot()) {
                                     i[0]++;
-                                    postBootMessageUpdate(i[0], pkgsSize, name);
+                                    postBootMessageUpdate(i[0], pkgsSize);
                                 }
                                 performDexOptLI(p, false, false, true);
                             }
@@ -4066,7 +4056,7 @@ public class PackageManagerService extends IPackageManager.Stub {
                     } else {
                         if (!isFirstBoot()) {
                             i[0]++;
-                            postBootMessageUpdate(i[0], pkgsSize, name);
+                            postBootMessageUpdate(i[0], pkgsSize);
                         }
                     }
                 }
@@ -4082,12 +4072,12 @@ public class PackageManagerService extends IPackageManager.Stub {
         }
     }
 
-    private void postBootMessageUpdate(int n, int total, final String name) {
+    private void postBootMessageUpdate(int n, int total) {
         try {
             ActivityManagerNative.getDefault().showBootMessage(
                     mContext.getResources().getString(
                             com.android.internal.R.string.android_upgrading_apk,
-                            n, total, name), true);
+                            n, total), true);
         } catch (RemoteException e) {
         }
     }
