@@ -4874,6 +4874,12 @@ public final class Settings {
          */
         public static final String WHITELIST_APP_CIRCLE_BAR = "whitelist_app_circle_bar";
 
+        /**
+         * Whether power menu user switcher is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_USER_ENABLED = "power_menu_user_enabled";
+
          /**
          * Settings to backup. This is here so that it's in the same place as the settings
          * keys and easy to update.
