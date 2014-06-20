@@ -60,6 +60,7 @@ import static com.android.internal.util.slim.QSConstants.TILE_WIFIAP;
 import static com.android.internal.util.slim.QSConstants.TILE_REBOOT;
 import static com.android.internal.util.slim.QSConstants.TILE_ONTHEGO;
 import static com.android.internal.util.slim.QSConstants.TILE_HOVER;
+import static com.android.internal.util.slim.QSConstants.TILE_PROFILE;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
