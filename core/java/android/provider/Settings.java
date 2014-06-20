@@ -4911,6 +4911,27 @@ public final class Settings {
          */
         public static final String POWER_MENU_USER_ENABLED = "power_menu_user_enabled";
 
+        /**
+         * Heads Up Notifications
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_NOTIFICATION = "heads_up_enabled";
+
+        /**
+         * Which applications to disable heads up notifications in
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_CUSTOM_VALUES = "heads_up_custom_values";
+
+        /**
+         * Which applications to disable heads up notifications for
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_BLACKLIST_VALUES = "heads_up_blacklist_values";
+
        /**
          * Show the pending notification counts as overlays on the status bar
          * @hide
