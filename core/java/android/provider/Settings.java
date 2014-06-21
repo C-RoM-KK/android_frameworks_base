@@ -5011,7 +5011,15 @@ public final class Settings {
             QUIET_HOURS_STILL,
             QUIET_HOURS_DIM,
             LOCKSCREEN_ALWAYS_SHOW_BATTERY,
-            SYSTEM_PROFILES_ENABLED,
+            SYSTEM_PROFILES_ENABLED
+        };
+
+        /**
+         * Settings to reset on user choice. They will fall back to their default value (0).
+         *
+         * @hide
+         */
+        public static final String[] SETTINGS_TO_RESET = {
             RECENTS_SWIPE_FLOATING,
             STATUS_BAR_NOTIFICATION_SWIPE_FLOATING
         };
