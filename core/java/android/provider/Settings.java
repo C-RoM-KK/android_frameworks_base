@@ -3064,6 +3064,12 @@ public final class Settings {
         public static final String DISABLE_FULLSCREEN_KEYBOARD = "disable_fullscreen_keyboard";
 
         /**
+         * Enables MultiUser
+         * @hide
+         */
+        public static final String ALLOW_MULTIUSER = "allow_multiuser";
+
+        /**
          * Configurable LTE or 4G icon - up to per user defined
          * @hide
          */
