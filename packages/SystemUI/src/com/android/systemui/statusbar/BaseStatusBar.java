@@ -1841,30 +1841,6 @@ public abstract class BaseStatusBar extends SystemUI implements
         }
     }
 
-    protected void setIconHiddenByUser(String iconPackage, boolean hide) {
-        if (iconPackage == null
-                || iconPackage.isEmpty()
-                || iconPackage.equals("android")) {
-            return;
-        }
-        mContext.getSharedPreferences("hidden_statusbar_icon_packages", 0)
-                .edit()
-                .putBoolean(iconPackage, hide)
-                .apply();
-    }
-
-    protected boolean isIconHiddenByUser(String iconPackage) {
-        if (iconPackage == null
-                || iconPackage.isEmpty()
-                || iconPackage.equals("android")) {
-            return false;
-
-        }
-        final boolean hide = mContext.getSharedPreferences("hidden_statusbar_icon_packages", 0)
-                .getBoolean(iconPackage, false);
-        return hide;
-    }
-
     class SidebarObserver extends ContentObserver {
         SidebarObserver(Handler handler) {
             super(handler);
