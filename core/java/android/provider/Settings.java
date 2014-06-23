@@ -4946,6 +4946,13 @@ public final class Settings {
          */
         public static final String HEADS_UP_FS_TIMEOUT = "heads_up_fs_timeout";
 
+        /**
+         * Heads Up in Floating Window
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_FLOATING_WINDOW = "heads_up_floating_window";
+
        /**
          * Show the pending notification counts as overlays on the status bar
          * @hide
