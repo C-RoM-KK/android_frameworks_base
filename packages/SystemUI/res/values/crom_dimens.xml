@@ -81,6 +81,7 @@
     <!-- Hover dimens -->
     <dimen name="hover_height">64dp</dimen>
     <dimen name="hover_cling_width">-1px</dimen>
+    <dimen name="hover_tablet_width">478dp</dimen>
 
     <!-- Quick Settings tile geometry: width and height (ribbon mode) -->
     <dimen name="qs_ribbon_width_min">40dp</dimen>
