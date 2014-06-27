@@ -360,6 +360,7 @@ public class KeyguardViewManager {
         }
 
         public void setCustomBackground(Drawable d) {
+            if (!isLaidOut()) return;
             if (!ActivityManager.isHighEndGfx() || !mScreenOn) {
                 if (d == null) {
                     d = mUserBackground;
@@ -392,20 +393,25 @@ public class KeyguardViewManager {
                 }
                 d.setColorFilter(BACKGROUND_COLOR, PorterDuff.Mode.SRC_OVER);
                 computeCustomBackgroundBounds(d);
-                Bitmap b = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
-                Canvas c = new Canvas(b);
-                drawToCanvas(c, d);
 
-                Drawable dd = new BitmapDrawable(mContext.getResources(), b);
+                if (isLaidOut()) {
+                    Bitmap b = Bitmap.createBitmap(getWidth(), getHeight(), Bitmap.Config.ARGB_8888);
+                    Canvas c = new Canvas(b);
+                    drawToCanvas(c, d);
 
-                mTransitionBackground = new TransitionDrawable(new Drawable[] {old, dd});
-                mTransitionBackground.setCrossFadeEnabled(true);
-                setBackground(mTransitionBackground);
+                    Drawable dd = new BitmapDrawable(mContext.getResources(), b);
 
-                mTransitionBackground.startTransition(200);
+                    mTransitionBackground = new TransitionDrawable(new Drawable[] {old, dd});
+                    mTransitionBackground.setCrossFadeEnabled(true);
+                    setBackground(mTransitionBackground);
 
-                mCustomBackground = newIsNull ? null : dd;
+                    mTransitionBackground.startTransition(200);
 
+                    mCustomBackground = newIsNull ? null : dd;
+                } else {
+                    setBackground(d);
+                    mCustomBackground = newIsNull ? null : d;
+                }
             }
             invalidate();
         }
@@ -838,14 +844,18 @@ public class KeyguardViewManager {
     }
 
     void updateShowWallpaper(boolean show) {
-        if (show) {
-            mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+        if (mSeeThrough) {
+            return;
         } else {
-            mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
-        }
-        mWindowLayoutParams.format = show ? PixelFormat.TRANSLUCENT : PixelFormat.OPAQUE;
+            if (show) {
+                mWindowLayoutParams.flags |= WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+            } else {
+                mWindowLayoutParams.flags &= ~WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER;
+            }
+            mWindowLayoutParams.format = show ? PixelFormat.TRANSLUCENT : PixelFormat.OPAQUE;
 
-        mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
+            mViewManager.updateViewLayout(mKeyguardHost, mWindowLayoutParams);
+        }
     }
 
     public void setNeedsInput(boolean needsInput) {

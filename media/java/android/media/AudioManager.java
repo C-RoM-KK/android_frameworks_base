@@ -62,8 +62,8 @@ public class AudioManager {
     private final boolean mUseVolumeKeySounds;
     private final Binder mToken = new Binder();
     private static String TAG = "AudioManager";
-    private final ProfileManager mProfileManager;
     private final WindowManager mWindowManager;
+    private final ProfileManager mProfileManager;
 
     /**
      * Broadcast intent, a hint for applications that audio is about to become
@@ -466,8 +466,8 @@ public class AudioManager {
                 com.android.internal.R.bool.config_useMasterVolume);
         mUseVolumeKeySounds = mContext.getResources().getBoolean(
                 com.android.internal.R.bool.config_useVolumeKeySounds);
-        mProfileManager = (ProfileManager) context.getSystemService(Context.PROFILE_SERVICE);
         mWindowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        mProfileManager = (ProfileManager) context.getSystemService(Context.PROFILE_SERVICE);
     }
 
     private static IAudioService getService()

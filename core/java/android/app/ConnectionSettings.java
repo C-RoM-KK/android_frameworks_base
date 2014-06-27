@@ -7,12 +7,10 @@ import android.content.Intent;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-import android.net.wimax.WimaxHelper;
 import android.nfc.NfcAdapter;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.Settings;
-
 import com.android.internal.telephony.RILConstants;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -31,7 +29,6 @@ public final class ConnectionSettings implements Parcelable {
     public static final int PROFILE_CONNECTION_MOBILEDATA = 0;
     public static final int PROFILE_CONNECTION_WIFI = 1;
     public static final int PROFILE_CONNECTION_WIFIAP = 2;
-    public static final int PROFILE_CONNECTION_WIMAX = 3;
     public static final int PROFILE_CONNECTION_GPS = 4;
     public static final int PROFILE_CONNECTION_SYNC = 5;
     public static final int PROFILE_CONNECTION_BLUETOOTH = 7;
@@ -125,7 +122,7 @@ public final class ConnectionSettings implements Parcelable {
                 break;
             case PROFILE_CONNECTION_2G3G:
                 Intent intent = new Intent(ACTION_MODIFY_NETWORK_MODE);
-                switch (getValue()) {
+                switch(getValue()) {
                     case CM_MODE_2G:
                         intent.putExtra(EXTRA_NETWORK_MODE, RILConstants.NETWORK_MODE_GSM_ONLY);
                         break;
@@ -185,14 +182,6 @@ public final class ConnectionSettings implements Parcelable {
                         wm.setWifiEnabled(false);
                     }
                     wm.setWifiApEnabled(null, forcedState);
-                }
-                break;
-            case PROFILE_CONNECTION_WIMAX:
-                if (WimaxHelper.isWimaxSupported(context)) {
-                    currentState = WimaxHelper.isWimaxEnabled(context);
-                    if (currentState != forcedState) {
-                        WimaxHelper.setWimaxEnabled(context, forcedState);
-                    }
                 }
                 break;
             case PROFILE_CONNECTION_NFC:

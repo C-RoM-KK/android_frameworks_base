@@ -26,6 +26,7 @@ import static com.android.internal.util.slim.QSConstants.TILE_BATTERYSAVER;
 import static com.android.internal.util.slim.QSConstants.TILE_BLUETOOTH;
 import static com.android.internal.util.slim.QSConstants.TILE_BRIGHTNESS;
 import static com.android.internal.util.slim.QSConstants.TILE_BUGREPORT;
+import static com.android.internal.util.slim.QSConstants.TILE_CAMERA;
 import static com.android.internal.util.slim.QSConstants.TILE_COMPASS;
 import static com.android.internal.util.slim.QSConstants.TILE_CONTACT;
 import static com.android.internal.util.slim.QSConstants.TILE_CUSTOM;
@@ -58,6 +59,9 @@ import static com.android.internal.util.slim.QSConstants.TILE_WIFI;
 import static com.android.internal.util.slim.QSConstants.TILE_WIFIAP;
 import static com.android.internal.util.slim.QSConstants.TILE_REBOOT;
 import static com.android.internal.util.slim.QSConstants.TILE_ONTHEGO;
+import static com.android.internal.util.slim.QSConstants.TILE_HOVER;
+import static com.android.internal.util.slim.QSConstants.TILE_PROFILE;
+import static com.android.internal.util.slim.QSConstants.TILE_SCREENSHOT;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
@@ -84,6 +88,7 @@ import com.android.systemui.quicksettings.BatterySaverTile;
 import com.android.systemui.quicksettings.BluetoothTile;
 import com.android.systemui.quicksettings.BrightnessTile;
 import com.android.systemui.quicksettings.BugReportTile;
+import com.android.systemui.quicksettings.CameraTile;
 import com.android.systemui.quicksettings.CompassTile;
 import com.android.systemui.quicksettings.ContactTile;
 import com.android.systemui.quicksettings.CustomTile;
@@ -115,7 +120,9 @@ import com.android.systemui.quicksettings.WiFiTile;
 import com.android.systemui.quicksettings.WifiAPTile;
 import com.android.systemui.quicksettings.RebootTile;
 import com.android.systemui.quicksettings.OnTheGoTile;
-
+import com.android.systemui.quicksettings.HoverTile;
+import com.android.systemui.quicksettings.ProfileTile;
+import com.android.systemui.quicksettings.ScreenshotTile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,7 +130,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class QuickSettingsController {
-    private static String TAG = "QuickSettingsController";
+    private static final String TAG = "QuickSettingsController";
 
     // Stores the broadcast receivers and content observers
     // quick tiles register for.
@@ -174,6 +181,7 @@ public class QuickSettingsController {
 
     void loadTiles() {
         // Filter items not compatible with device
+        boolean cameraSupported = DeviceUtils.deviceSupportsCamera();
         boolean bluetoothSupported = DeviceUtils.deviceSupportsBluetooth();
         boolean mobileDataSupported = DeviceUtils.deviceSupportsMobileData(mContext);
         boolean lteSupported = DeviceUtils.deviceSupportsLte(mContext);
@@ -223,6 +231,10 @@ public class QuickSettingsController {
                 qs = new BluetoothTile(mContext, this, mStatusBarService.mBluetoothController);
             } else if (tile.equals(TILE_BRIGHTNESS)) {
                 qs = new BrightnessTile(mContext, this);
+            } else if (tile.equals(TILE_CAMERA) && cameraSupported) {
+            	qs = new CameraTile(mContext, this, mHandler);
+            } else if (tile.equals(TILE_COMPASS)) {
+                qs = new CompassTile(mContext, this);
             } else if (tile.equals(TILE_RINGER)) {
                 qs = new RingerModeTile(mContext, this);
             } else if (tile.equals(TILE_SYNC)) {
@@ -266,18 +278,22 @@ public class QuickSettingsController {
                 qs = new QuickRecordTile(mContext, this);
             } else if (tile.equals(TILE_SHAKE)) {
                 qs = new ShakeEventTile(mContext, this);
-            } else if (tile.equals(TILE_COMPASS)) {
-                qs = new CompassTile(mContext, this);
             } else if (tile.contains(TILE_CUSTOM)) {
                 qs = new CustomTile(mContext, this, findCustomKey(tile));
             } else if (tile.contains(TILE_CONTACT)) {
                 qs = new ContactTile(mContext, this, findCustomKey(tile));
-            } else if (tile.contains(TILE_ONTHEGO)) {
-                qs = new OnTheGoTile(mContext, this);
             } else if (tile.contains(TILE_FCHARGE)) {
                 qs = new FastChargeTile(mContext, this);
+            } else if (tile.equals(TILE_SCREENSHOT)) {
+                qs = new ScreenshotTile(mContext, this, mHandler);
             } else if (tile.equals(TILE_BATTERYSAVER)) {
                 qs = new BatterySaverTile(mContext, this);
+            } else if (tile.contains(TILE_ONTHEGO)) {
+                qs = new OnTheGoTile(mContext, this);
+            } else if (tile.equals(TILE_HOVER)) {
+                qs = new HoverTile(mContext, this);
+            } else if (tile.equals(TILE_PROFILE)) {
+                qs = new ProfileTile(mContext, this);
             }
 
             if (qs != null) {

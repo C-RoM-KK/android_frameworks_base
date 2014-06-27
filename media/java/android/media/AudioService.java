@@ -422,6 +422,7 @@ public class AudioService extends IAudioService.Stub {
 
     private int mDeviceOrientation = Configuration.ORIENTATION_UNDEFINED;
     private int mDeviceRotation = Surface.ROTATION_0;
+    private int mUiThemeMode = Configuration.UI_THEME_MODE_NORMAL;
 
     // Request to override default use of A2DP for media.
     private boolean mBluetoothA2dpEnabled;
@@ -1030,7 +1031,7 @@ public class AudioService extends IAudioService.Stub {
             if ((direction == AudioManager.ADJUST_RAISE) &&
                     !checkSafeMediaVolume(streamTypeAlias, aliasIndex + step, device)) {
                 Log.e(TAG, "adjustStreamVolume() safe volume index = "+oldIndex);
-                mVolumePanel.postDisplaySafeVolumeWarning(flags);
+                displaySafeVolumeWarning(flags);
             } else if (streamState.adjustIndex(direction * step, device)) {
                 // Post message to set system volume (it in turn will post a message
                 // to persist). Do not change volume if stream is muted.
@@ -1158,7 +1159,7 @@ public class AudioService extends IAudioService.Stub {
             }
 
             if (!checkSafeMediaVolume(streamTypeAlias, index, device)) {
-                mVolumePanel.postDisplaySafeVolumeWarning(flags);
+                displaySafeVolumeWarning(flags);
                 mPendingVolumeCommand = new StreamVolumeCommand(
                                                     streamType, index, flags, device);
             } else {
@@ -1294,7 +1295,7 @@ public class AudioService extends IAudioService.Stub {
 
     // UI update and Broadcast Intent
     private void sendMasterVolumeUpdate(int flags, int oldVolume, int newVolume) {
-        mVolumePanel.postMasterVolumeChanged(flags);
+        masterVolumeChanged(flags);
 
         Intent intent = new Intent(AudioManager.MASTER_VOLUME_CHANGED_ACTION);
         intent.putExtra(AudioManager.EXTRA_PREV_MASTER_VOLUME_VALUE, oldVolume);
@@ -1304,7 +1305,7 @@ public class AudioService extends IAudioService.Stub {
 
     // UI update and Broadcast Intent
     private void sendMasterMuteUpdate(boolean muted, int flags) {
-        mVolumePanel.postMasterMuteChanged(flags);
+        masterMuteChanged(flags);
         broadcastMasterMuteStatus(muted);
     }
 
@@ -4439,6 +4440,51 @@ public class AudioService extends IAudioService.Stub {
 
     }
 
+    /**
+     * Recreate volume panel:
+     * - At master volume changed
+     * - At master mute changed
+     * - At UI change like applying a theme
+     * - When requesting safe headset
+     */
+    private void masterVolumeChanged(final int flags) {
+        if (mUiContext != null && mVolumePanel != null) {
+            mVolumePanel.postMasterVolumeChanged(flags);
+        } else {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mUiContext == null) {
+                        mUiContext = ThemeUtils.createUiContext(mContext);
+                    }
+
+                    final Context context = mUiContext != null ? mUiContext : mContext;
+                    mVolumePanel = new VolumePanel(context, AudioService.this);
+                    mVolumePanel.postMasterVolumeChanged(flags);
+                }
+            });
+        }
+    }
+
+    private void masterMuteChanged(final int flags) {
+        if (mUiContext != null && mVolumePanel != null) {
+            mVolumePanel.postMasterMuteChanged(flags);
+        } else {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mUiContext == null) {
+                        mUiContext = ThemeUtils.createUiContext(mContext);
+                    }
+
+                    final Context context = mUiContext != null ? mUiContext : mContext;
+                    mVolumePanel = new VolumePanel(context, AudioService.this);
+                    mVolumePanel.postMasterMuteChanged(flags);
+                }
+            });
+        }
+    }
+
     private void showVolumeChangeUi(final int streamType, final int flags) {
         if (mUiContext != null && mVolumePanel != null) {
             mVolumePanel.postVolumeChanged(streamType, flags);
@@ -4453,6 +4499,25 @@ public class AudioService extends IAudioService.Stub {
                     final Context context = mUiContext != null ? mUiContext : mContext;
                     mVolumePanel = new VolumePanel(context, AudioService.this);
                     mVolumePanel.postVolumeChanged(streamType, flags);
+                }
+            });
+        }
+    }
+
+    private void displaySafeVolumeWarning(final int flags) {
+        if (mUiContext != null && mVolumePanel != null) {
+            mVolumePanel.postDisplaySafeVolumeWarning(flags);
+        } else {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mUiContext == null) {
+                        mUiContext = ThemeUtils.createUiContext(mContext);
+                    }
+
+                    final Context context = mUiContext != null ? mUiContext : mContext;
+                    mVolumePanel = new VolumePanel(context, AudioService.this);
+                    mVolumePanel.postDisplaySafeVolumeWarning(flags);
                 }
             });
         }
@@ -4584,6 +4649,13 @@ public class AudioService extends IAudioService.Stub {
             // reading new orientation "safely" (i.e. under try catch) in case anything
             // goes wrong when obtaining resources and configuration
             Configuration config = context.getResources().getConfiguration();
+
+            // UI theme mode has changed....set the theme of the volume panel
+            if (mUiThemeMode != config.uiThemeMode) {
+                mUiThemeMode = config.uiThemeMode;
+                mVolumePanel.setTheme();
+            }
+
             // TODO merge rotation and orientation
             if (mMonitorOrientation) {
                 int newOrientation = config.orientation;

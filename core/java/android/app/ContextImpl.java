@@ -615,6 +615,7 @@ class ContextImpl extends Context {
                     final Context outerContext = ctx.getOuterContext();
                     return new ProfileManager (outerContext, ctx.mMainThread.getHandler());
                 }});
+
     }
 
     static ContextImpl getImpl(Context context) {

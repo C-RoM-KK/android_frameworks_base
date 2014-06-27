@@ -2114,6 +2114,8 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         mInLayout = false;
 
         mOverscrollMax = (b - t) / OVERSCROLL_LIMIT_DIVISOR;
+        mHeight = getHeight();
+        mWidth = getWidth();
 
         // TODO: Move somewhere sane. This doesn't belong in onLayout().
         if (mFastScroller != null) {
@@ -2275,11 +2277,17 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             // Scrap view implies temporary detachment.
             isScrap[0] = true;
             return transientView;
+
         }
 
         final View scrapView = mRecycler.getScrapView(position);
-        final View child = mAdapter.getView(position, scrapView, this);
+        View child = mAdapter.getView(position, scrapView, this);
+
         if (scrapView != null) {
+            if (mListAnimationMode != 0 && !mIsWidget) {
+                child = setAnimation(child);
+            }
+
             if (child != scrapView) {
                 // Failed to re-bind the data, return scrap to the heap.
                 mRecycler.addScrapView(scrapView, position);
@@ -4769,7 +4777,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                     return;
                 }
 
-                if (lastPos == mLastSeenPos && getChildCount() > 1) {
+                if (lastPos == mLastSeenPos) {
                     // No new views, let things keep going.
                     postOnAnimation(this);
                     return;
@@ -4802,7 +4810,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 }
                 final int nextPos = firstPos + nextViewIndex;
 
-                if (nextPos == mLastSeenPos && getChildCount() > 1) {
+                if (nextPos == mLastSeenPos) {
                     // No new views, let things keep going.
                     postOnAnimation(this);
                     return;
@@ -4828,7 +4836,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
 
             case MOVE_UP_POS: {
-                if (firstPos == mLastSeenPos && getChildCount() > 1) {
+                if (firstPos == mLastSeenPos) {
                     // No new views, let things keep going.
                     postOnAnimation(this);
                     return;
@@ -4859,7 +4867,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
                 }
                 final int lastPos = firstPos + lastViewIndex;
 
-                if (lastPos == mLastSeenPos && getChildCount() > 1) {
+                if (lastPos == mLastSeenPos) {
                     // No new views, let things keep going.
                     postOnAnimation(this);
                     return;
@@ -4885,7 +4893,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
 
             case MOVE_OFFSET: {
-                if (mLastSeenPos == firstPos && getChildCount() > 1) {
+                if (mLastSeenPos == firstPos) {
                     // No new views, let things keep going.
                     postOnAnimation(this);
                     return;
@@ -6673,6 +6681,12 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
         private SparseArray<View> mTransientStateViews;
         private LongSparseArray<View> mTransientStateViewsById;
 
+        private boolean mIsActiveViewsInitialized;
+
+        boolean isActiveViewsInitialized() {
+            return mIsActiveViewsInitialized;
+        }
+
         public void setViewTypeCount(int viewTypeCount) {
             if (viewTypeCount < 1) {
                 throw new IllegalArgumentException("Can't have a viewTypeCount < 1");
@@ -6744,6 +6758,9 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             }
 
             clearTransientStateViews();
+
+            // We want to a refresh of mActiveViews
+            mIsActiveViewsInitialized = false;
         }
 
         /**
@@ -6754,6 +6771,11 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
          *        mActiveViews
          */
         void fillActiveViews(int childCount, int firstActivePosition) {
+            // The recyclebin is initialized when we have some active views.
+            if (childCount > 0) {
+                mIsActiveViewsInitialized = true;
+            }
+
             if (mActiveViews.length < childCount) {
                 mActiveViews = new View[childCount];
             }
@@ -6827,7 +6849,7 @@ public abstract class AbsListView extends AdapterView<ListAdapter> implements Te
             if (viewsById != null) {
                 final int N = viewsById.size();
                 for (int i = 0; i < N; i++) {
-                   removeDetachedView(viewsById.valueAt(i), false);
+                    removeDetachedView(viewsById.valueAt(i), false);
                 }
                 viewsById.clear();
             }

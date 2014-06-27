@@ -894,6 +894,7 @@
   <public type="drawable" name="ic_dialog_info" id="0x0108009b" />
   <public type="drawable" name="ic_menu_sort_alphabetically" id="0x0108009c" />
   <public type="drawable" name="ic_menu_sort_by_size" id="0x0108009d" />
+  <public type="drawable" name="stat_sys_downloadicon" id="0x0108009e" />
 
   <public type="layout" name="activity_list_item" id="0x01090000" />
   <public type="layout" name="expandable_list_content" id="0x01090001" />
@@ -2095,6 +2096,9 @@
   <public type="style" name="Theme.Holo.Light.NoActionBar.TranslucentDecor" id="0x010301e2" />
   <public type="style" name="Theme.DeviceDefault.NoActionBar.TranslucentDecor" id="0x010301e3" />
   <public type="style" name="Theme.DeviceDefault.Light.NoActionBar.TranslucentDecor" id="0x010301e4" />
+
+  <public type="color" name="trds_background" id="0x0106001c" />
+  <public type="color" name="trds_text" id="0x0106001d" />
 
   <!-- CTS tests reference these resources, but fail because we added
        new ones, changing the order, and Google didn't declare these

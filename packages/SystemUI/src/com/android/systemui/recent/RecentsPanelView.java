@@ -22,6 +22,7 @@ import android.animation.TimeInterpolator;
 import android.app.ActivityManager;
 import android.app.ActivityManagerNative;
 import android.app.ActivityOptions;
+import android.app.INotificationManager;
 import android.app.TaskStackBuilder;
 import android.app.admin.DevicePolicyManager;
 import android.content.ActivityNotFoundException;
@@ -46,6 +47,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.UserHandle;
 import android.provider.Settings;
 import android.util.AttributeSet;
@@ -71,6 +73,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.systemui.R;
 import com.android.systemui.statusbar.BaseStatusBar;
@@ -122,6 +125,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
 
     MemInfoReader mMemInfoReader = new MemInfoReader();
 
+    private INotificationManager mNotificationManager;
+
     public static interface RecentsScrollView {
         public int numItemsInOneScreenful();
         public void setAdapter(TaskDescriptionAdapter adapter);
@@ -131,6 +136,8 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         public void drawFadedEdges(Canvas c, int left, int right, int top, int bottom);
         public void setOnScrollListener(Runnable listener);
         public void removeAllViewsInLayout();
+        public boolean isConfirmationDialogAnswered();
+        public void setDismissAfterConfirmation(boolean dismiss);
     }
 
     private final class OnLongClickDelegate implements View.OnLongClickListener {
@@ -790,15 +797,25 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             return;
         }
         if (DEBUG) Log.v(TAG, "Jettison " + ad.getLabel());
-        mRecentTaskDescriptions.remove(ad);
-        mRecentTasksLoader.remove(ad);
 
-        // Handled by widget containers to enable LayoutTransitions properly
-        // mListAdapter.notifyDataSetChanged();
+        if (mRecentTaskDescriptions != null) {
+            mRecentTaskDescriptions.remove(ad);
+            mRecentTasksLoader.remove(ad);
 
-        if (mRecentTaskDescriptions.size() == 0) {
+            // Handled by widget containers to enable LayoutTransitions properly
+            // mListAdapter.notifyDataSetChanged();
+
+           if (mRecentTaskDescriptions.size() == 0) {
+               dismissAndGoBack();
+            }
+        } else {
             RecentTasksLoader.getInstance(mContext).cancelPreloadingFirstTask();
-            dismissAndGoBack();
+            // Instruct (possibly) running on-the-spot dialog to dismiss recents
+            mRecentsContainer.setDismissAfterConfirmation(true);
+            if (mRecentsContainer.isConfirmationDialogAnswered()) {
+                // No on-the-spot dialog running, safe to dismiss now
+                dismissAndGoBack();
+            }
         }
 
         // Currently, either direction means the same thing, so ignore direction and remove
@@ -815,6 +832,32 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
             setContentDescription(null);
         }
         updateRamBar();
+    }
+
+    public void handleFloat(View view) {
+        launchFloating(view);
+    }
+
+    private void launchFloating(View view) {
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
+        if (viewHolder != null) {
+            final TaskDescription ad = viewHolder.taskDescription;
+            if (ad == null) {
+                Log.v(TAG, "Not able to find activity description for floating task; view=" + view +
+                        " tag=" + view.getTag());
+                return;
+            }
+            dismissAndGoBack();
+            view.post(new Runnable() {
+                @Override
+                public void run() {
+                    Intent intent = ad.intent;
+                    intent.setFlags(Intent.FLAG_FLOATING_WINDOW
+                            | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    mContext.startActivity(intent);
+                }
+            });
+        }
     }
 
     private void startApplicationDetailsActivity(String packageName) {
@@ -841,6 +884,11 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         thumbnailView.setSelected(true);
         final PopupMenu popup =
             new PopupMenu(mContext, anchorView == null ? selectedView : anchorView);
+        // initialize if null
+        if (mNotificationManager == null) {
+            mNotificationManager = INotificationManager.Stub.asInterface(
+                    ServiceManager.getService(Context.NOTIFICATION_SERVICE));
+        }
         mPopup = popup;
         popup.getMenuInflater().inflate(R.menu.recent_popup_menu, popup.getMenu());
 
@@ -889,6 +937,32 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                     ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
                     if (viewHolder != null) {
                         final TaskDescription ad = viewHolder.taskDescription;
+                        String currentViewPackage = ad.packageName;
+                        boolean allowed = true; // default on
+                        try {
+                            // preloaded apps are added to the blacklist array when is recreated, handled in the notification manager
+                            allowed = mNotificationManager.isPackageAllowedForFloatingMode(currentViewPackage);
+                        } catch (android.os.RemoteException ex) {
+                            // System is dead
+                        }
+                        if (!allowed) {
+                            dismissAndGoBack();
+                            String text = mContext.getResources().getString(R.string.floating_mode_blacklisted_app);
+                            int duration = Toast.LENGTH_LONG;
+                            Toast.makeText(mContext, text, duration).show();
+                            return true;
+                        } else {
+                            dismissAndGoBack();
+                        }
+                        selectedView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Intent intent = ad.intent;
+                                intent.setFlags(Intent.FLAG_FLOATING_WINDOW
+                                        | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                mContext.startActivity(intent);
+                            }
+                        });
                         ActivityManager am = (ActivityManager)mContext.getSystemService(
                                 Context.ACTIVITY_SERVICE);
                         am.forceStopPackage(ad.packageName);
@@ -909,20 +983,7 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
                         throw new IllegalStateException("Oops, no tag on view " + selectedView);
                     }
                 } else if (item.getItemId() == R.id.recent_launch_floating) {
-                    ViewHolder viewHolder = (ViewHolder) selectedView.getTag();
-                    if (viewHolder != null) {
-                        final TaskDescription ad = viewHolder.taskDescription;
-                        dismissAndGoBack();
-                        selectedView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = ad.intent;
-                                intent.setFlags(Intent.FLAG_FLOATING_WINDOW
-                                        | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                mContext.startActivity(intent);
-                            }
-                        });
-                    }
+                    launchFloating(selectedView);
                 } else {
                     return false;
                 }
@@ -975,11 +1036,6 @@ public class RecentsPanelView extends FrameLayout implements OnItemClickListener
         }
 
         return super.fitSystemWindows(insets);
-    }
-
-    class FakeClearUserDataObserver extends IPackageDataObserver.Stub {
-        public void onRemoveCompleted(final String packageName, final boolean succeeded) {
-        }
     }
 
     private void updateRamBar() {

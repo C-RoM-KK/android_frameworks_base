@@ -20,6 +20,8 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.hardware.Camera;
+import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.ConnectivityManager;
 import android.nfc.NfcAdapter;
@@ -74,6 +76,10 @@ public class DeviceUtils {
                     || tm.getLteOnGsmMode() != 0;
     }
 
+    public static boolean deviceSupportsCamera() {
+        return Camera.getNumberOfCameras() > 0;
+    }
+
     public static boolean deviceSupportsGps(Context context) {
         return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_LOCATION_GPS);
     }
@@ -89,7 +95,17 @@ public class DeviceUtils {
     }
 
     public static boolean deviceSupportsTorch(Context context) {
-        return context.getResources().getBoolean(com.android.internal.R.bool.config_enableTorch);
+        PackageManager pm = context.getPackageManager();
+        try {
+            List<ApplicationInfo> packages = pm.getInstalledApplications(0);
+                for (ApplicationInfo packageInfo : packages) {
+                    if (packageInfo.packageName.equals(TorchConstants.APP_PACKAGE_NAME)) {
+                        return true;
+                    }
+                }
+        } catch (Exception e) {
+        }
+        return false;
     }
 
     public static boolean deviceSupportsProximitySensor(Context context) {
@@ -100,6 +116,12 @@ public class DeviceUtils {
     public static boolean deviceSupportsLightSensor(Context context) {
         SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         return sm.getDefaultSensor(TYPE_LIGHT) != null;
+    }
+
+    public static boolean deviceSupportsCompass(Context context) {
+        SensorManager sm = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
+        return (sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null
+                && sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null);
     }
 
     public static FilteredDeviceFeaturesArray filterUnsupportedDeviceFeatures(Context context,

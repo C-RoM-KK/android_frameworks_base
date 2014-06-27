@@ -77,9 +77,13 @@ import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.internal.util.nameless.NamelessActions;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import android.content.ComponentName;
 
 import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.util.slim.ButtonConfig;
@@ -130,11 +134,12 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private boolean mHasTelephony;
     private boolean mHasVibrator;
     private final boolean mShowSilentToggle;
+
+    private static int mTextColor;
+
     private Profile mChosenProfile;
 
     private static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
-
-    private static int mTextColor;
 
     /**
      * @param context everything needs a context :(
@@ -180,7 +185,10 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     public void showDialog(boolean keyguardShowing, boolean isDeviceProvisioned) {
         mKeyguardShowing = keyguardShowing;
         mDeviceProvisioned = isDeviceProvisioned;
-        if (mDialog != null && mUiContext == null) {
+        if (mDialog != null) {
+            if (mUiContext != null) {
+                mUiContext = null;
+            }
             mDialog.dismiss();
             mDialog = null;
             mDialog = createDialog();
@@ -265,7 +273,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                         R.string.global_action_bug_report) {
 
                     public void onPress() {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getUiContext());
                         builder.setTitle(com.android.internal.R.string.bugreport_title);
                         builder.setMessage(com.android.internal.R.string.bugreport_message);
                         builder.setNegativeButton(com.android.internal.R.string.cancel, null);
@@ -304,6 +312,34 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                         return false;
                     }
                 });
+        }
+
+        // next: On-The-Go, if enabled
+        boolean showOnTheGo = Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_ONTHEGO_ENABLED, false);
+        if (showOnTheGo) {
+            mItems.add(
+                new SinglePressAction(com.android.internal.R.drawable.ic_lock_onthego,
+                        R.string.global_action_onthego) {
+
+                        public void onPress() {
+                            NamelessActions.processAction(mContext,
+                                    NamelessActions.ACTION_ONTHEGO_TOGGLE);
+                        }
+
+                        public boolean onLongPress() {
+                            return false;
+                        }
+
+                        public boolean showDuringKeyguard() {
+                            return true;
+                        }
+
+                        public boolean showBeforeProvisioning() {
+                            return true;
+                        }
+                    }
+            );
         }
 
         for (final ButtonConfig config : powerMenuConfig) {
@@ -350,6 +386,28 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             return true;
                         }
                     });
+            // next: profile - only shown if enabled, which is true by default
+            } else if (config.getClickAction().equals(PolicyConstants.ACTION_PROFILES)) {
+                mItems.add(
+                    new ProfileChooseAction() {
+                        public void onPress() {
+                            if (Settings.System.getInt(mContext.getContentResolver(), SYSTEM_PROFILES_ENABLED, 1) == 1) {
+                                createProfileDialog();
+                            }
+                        }
+
+                        public boolean onLongPress() {
+                            return true;
+                        }
+
+                        public boolean showDuringKeyguard() {
+                            return false;
+                        }
+
+                        public boolean showBeforeProvisioning() {
+                            return false;
+                        }
+                    });
             // screenshot
             } else if (config.getClickAction().equals(PolicyConstants.ACTION_SCREENSHOT)) {
                 mItems.add(
@@ -387,28 +445,6 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                             return true;
                         }
                     });
-
-        // next: profile - only shown if enabled, which is true by default
-        if (Settings.System.getInt(mContext.getContentResolver(), SYSTEM_PROFILES_ENABLED, 1) == 1) {
-            mItems.add(
-                new ProfileChooseAction() {
-                    public void onPress() {
-                        createProfileDialog();
-                    }
-
-                    public boolean onLongPress() {
-                        return true;
-                    }
-
-                    public boolean showDuringKeyguard() {
-                        return false;
-                    }
-
-                    public boolean showBeforeProvisioning() {
-                        return false;
-                    }
-                });
-        }
 
             // airplane mode
             } else if (config.getClickAction().equals(PolicyConstants.ACTION_AIRPLANE)) {
@@ -459,7 +495,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
 
         // one more thing: optionally add a list of users to switch to
-        if (SystemProperties.getBoolean("fw.power_user_switcher", false)) {
+        if (Settings.System.getBoolean(mContext.getContentResolver(),
+                Settings.System.POWER_MENU_USER_ENABLED, false)
+                || SystemProperties.getBoolean("fw.power_user_switcher", false)) {
             addUsersToMenu(mItems);
         }
 
@@ -583,6 +621,41 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         onPieModeChanged();
     }
 
+    private void createProfileDialog() {
+        final ProfileManager profileManager = (ProfileManager) mContext
+                .getSystemService(Context.PROFILE_SERVICE);
+
+        final Profile[] profiles = profileManager.getProfiles();
+        UUID activeProfile = profileManager.getActiveProfile().getUuid();
+        final CharSequence[] names = new CharSequence[profiles.length];
+
+        int i = 0;
+        int checkedItem = 0;
+
+        for (Profile profile : profiles) {
+            if (profile.getUuid().equals(activeProfile)) {
+                checkedItem = i;
+                mChosenProfile = profile;
+            }
+            names[i++] = profile.getName();
+        }
+
+        final AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
+
+        AlertDialog dialog = ab.setSingleChoiceItems(names, checkedItem,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which < 0)
+                            return;
+                        mChosenProfile = profiles[which];
+                        profileManager.setActiveProfile(mChosenProfile.getUuid());
+                        dialog.cancel();
+                    }
+                }).create();
+        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG);
+        dialog.show();
+    }
+
     private void constructNavBarToggle(Drawable icon, String description) {
         mNavBarModeOn = new ToggleAction(
                 icon,
@@ -655,49 +728,13 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         }
     }
 
-    private void createProfileDialog(){
-        final ProfileManager profileManager = (ProfileManager)mContext.getSystemService(Context.PROFILE_SERVICE);
-
-        final Profile[] profiles = profileManager.getProfiles();
-        UUID activeProfile = profileManager.getActiveProfile().getUuid();
-        final CharSequence[] names = new CharSequence[profiles.length];
-
-        int i=0;
-        int checkedItem = 0;
-
-        for(Profile profile : profiles) {
-            if(profile.getUuid().equals(activeProfile)) {
-                checkedItem = i;
-                mChosenProfile = profile;
-            }
-            names[i++] = profile.getName();
-        }
-
-        final AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
-
-        AlertDialog dialog = ab
-                .setTitle(R.string.global_action_choose_profile)
-                .setSingleChoiceItems(names, checkedItem, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which < 0)
-                            return;
-                        mChosenProfile = profiles[which];
-                    }
-                })
-                .setPositiveButton(com.android.internal.R.string.yes,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                profileManager.setActiveProfile(mChosenProfile.getUuid());
-                            }
-                        })
-                .setNegativeButton(com.android.internal.R.string.no,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                }).create();
-        dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_DIALOG);
-        dialog.show();
+    private void startOnTheGo() {
+        final ComponentName cn = new ComponentName("com.android.systemui",
+                "com.android.systemui.nameless.onthego.OnTheGoService");
+        final Intent startIntent = new Intent();
+        startIntent.setComponent(cn);
+        startIntent.setAction("start");
+        mContext.startService(startIntent);
     }
 
     private void prepareDialog() {
@@ -979,18 +1016,11 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
             ImageView icon = (ImageView) v.findViewById(R.id.icon);
             TextView messageView = (TextView) v.findViewById(R.id.message);
             TextView statusView = (TextView) v.findViewById(R.id.status);
-            if (statusView != null) {
-                statusView.setVisibility(View.VISIBLE);
-                statusView.setText(mProfileManager.getActiveProfile().getName());
-            }
+            statusView.setVisibility(View.VISIBLE);
+            statusView.setText(mProfileManager.getActiveProfile().getName());
 
-            if (icon != null) {
-                icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_lock_profile));
-            }
-
-            if (messageView != null) {
-                messageView.setText(R.string.global_action_choose_profile);
-            }
+            icon.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_lock_profile));
+            messageView.setText(R.string.global_action_choose_profile);
 
             return v;
         }

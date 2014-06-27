@@ -305,7 +305,7 @@ public class OnTheGoService extends Service implements ShakeDetector.Listener {
         logDebug("Setup Views, restarting: " + (isRestarting ? "true" : "false"));
 
         final int cameraType = Settings.System.getInt(getContentResolver(),
-                Settings.System.ON_THE_GO_CAMERA, 0);
+                 Settings.System.ON_THE_GO_CAMERA, 0);
 
         try {
             getCameraInstance(cameraType);
@@ -502,3 +502,4 @@ public class OnTheGoService extends Service implements ShakeDetector.Listener {
         }
     }
 }
+

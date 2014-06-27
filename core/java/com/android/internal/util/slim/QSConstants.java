@@ -43,13 +43,17 @@ public class QSConstants {
         public static final String TILE_QUIETHOURS = "toggleQuietHours";
         public static final String TILE_VOLUME = "toggleVolume";
         public static final String TILE_EXPANDEDDESKTOP = "toggleExpandedDesktop";
+        public static final String TILE_CAMERA = "toggleCamera";
+        public static final String TILE_COMPASS = "toggleCompass";
         public static final String TILE_MUSIC = "toggleMusic";
         public static final String TILE_REBOOT = "toggleReboot";
         public static final String TILE_THEME = "toggleTheme";
+        public static final String TILE_SCREENSHOT = "toggleScreenshot";
+        public static final String TILE_ONTHEGO = "toggleOnTheGo";
         public static final String TILE_CUSTOM = "toggleCustom";
-        public static final String TILE_CONTACT = "tileContact";
-        public static final String TILE_SHAKE = "tileShake";
-        public static final String TILE_COMPASS = "toggleCompass";
+        public static final String TILE_CONTACT = "toggleContact";
+        public static final String TILE_SHAKE = "toggleShake";
+        public static final String TILE_HOVER = "toggleHover";
 
         // dynamic tiles
         public static final String TILE_ALARM = "toggleAlarm";
@@ -59,8 +63,8 @@ public class QSConstants {
 
         //Key for custom tile additive
         public static final String TILE_CUSTOM_KEY = " Key=";
-        public static final String TILE_ONTHEGO = "toggleOnTheGo";
         public static final String TILE_FCHARGE = "toggleFastCharge";
+        public static final String TILE_PROFILE = "toggleProfile";
         public static final String TILE_BATTERYSAVER = "toggleBatterySaver";
         public static final String TILE_CUSTOM_DELIMITER = " =action= ";
 
@@ -77,6 +81,7 @@ public class QSConstants {
             TILES_DEFAULT.add(TILE_AIRPLANE);
             TILES_DEFAULT.add(TILE_BLUETOOTH);
             TILES_DEFAULT.add(TILE_LOCATION);
+            TILES_DEFAULT.add(TILE_PROFILE);
         }
 
         public static ArrayList<String> DYNAMIC_TILES_DEFAULT = new ArrayList<String>();

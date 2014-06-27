@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2006 The Android Open Source Project
+ * This code has been modified. Portions copyright (C) 2014, ParanoidAndroid Project.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1022,7 +1023,7 @@ public final class Settings {
          * The content:// style URL for this table
          */
         public static final Uri CONTENT_URI =
-            Uri.parse("content://" + AUTHORITY + "/system");
+                Uri.parse("content://" + AUTHORITY + "/system");
 
         private static final NameValueCache sNameValueCache = new NameValueCache(
                 SYS_PROP_SETTING_VERSION,
@@ -1143,7 +1144,7 @@ public final class Settings {
         public static boolean getBoolean(ContentResolver cr, String name, boolean def) {
             String v = getString(cr, name);
             try {
-                if(v != null)
+                if (v != null)
                     return "1".equals(v);
                 else
                     return def;
@@ -1230,7 +1231,7 @@ public final class Settings {
         public static Uri getUriFor(String name) {
             if (MOVED_TO_SECURE.contains(name)) {
                 Log.w(TAG, "Setting " + name + " has moved from android.provider.Settings.System"
-                    + " to android.provider.Settings.Secure, returning Secure URI.");
+                       + " to android.provider.Settings.Secure, returning Secure URI.");
                 return Secure.getUriFor(Secure.CONTENT_URI, name);
             }
             if (MOVED_TO_GLOBAL.contains(name) || MOVED_TO_SECURE_THEN_GLOBAL.contains(name)) {
@@ -1552,7 +1553,7 @@ public final class Settings {
 
         /** @hide */
         public static boolean hasInterestingConfigurationChanges(int changes) {
-            return (changes&ActivityInfo.CONFIG_FONT_SCALE) != 0;
+            return (changes & ActivityInfo.CONFIG_FONT_SCALE) != 0;
         }
 
         /** @deprecated - Do not use */
@@ -2453,6 +2454,11 @@ public final class Settings {
         public static final String INCALL_GLOWPAD_TRANSPARENCY = "incall_glowpad_transparency";
 
         /**
+         * Padding above and below dialpad keys in dialer.
+        */
+        public static final String DIALKEY_PADDING = "dialkey_padding";
+
+        /**
          * Whether the hearing aid is enabled. The value is
          * boolean (1 or 0).
          * @hide
@@ -2856,6 +2862,12 @@ public final class Settings {
          */
         public static final String POINTER_SPEED = "pointer_speed";
 
+         /**
+         * Screenshot toggle delay
+         * @hide
+         */
+        public static final String SCREENSHOT_TOGGLE_DELAY = "screenshot_toggle_delay";
+
         /**
          * I am the lolrus.
          * <p>
@@ -2991,16 +3003,15 @@ public final class Settings {
          */
         public static final String EXPANDED_DESKTOP_STATE = "expanded_desktop_state";
 
+        public static final String EXPANDED_DESKTOP_STYLE = "expanded_desktop_style";
+
+        public static final String POWER_MENU_EXPANDED_DESKTOP_ENABLED = "power_menu_expanded_desktop_enabled";
+
         /**
          * Whether national data roaming should be used.
          * @hide
          */
         public static final String MVNO_ROAMING = "mvno_roaming";
-
-        /**
-         * @hide
-         */
-        public static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
 
         /**
          * Volume rocker wake
@@ -3613,6 +3624,63 @@ public final class Settings {
          */
         public static final String STATUS_BAR_BRIGHTNESS_CONTROL = "status_bar_brightness_control";
 
+
+        /**
+         * Whether or not to use the app sidebar
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_ENABLED = "app_sidebar_enabled";
+
+        /**
+         * User defined transparency level for sidebar
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_TRANSPARENCY = "app_sidebar_transparency";
+
+        /**
+         * Disable text labels for app sidebar items
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_DISABLE_LABELS = "app_sidebar_disable_labels";
+
+        /**
+         * Position of app sidebar
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_POSITION = "app_sidebar_position";
+
+        /**
+         * Width of the appbar trigger
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_TRIGGER_WIDTH = "app_sidebar_trigger_width";
+
+         /**
+          * Position of appbar sidebar
+          *
+          * @hide
+          */
+        public static final String APP_SIDEBAR_TRIGGER_TOP = "app_sidebar_trigger_top";
+
+        /**
+         * Height of the appbar trigger
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_TRIGGER_HEIGHT = "app_sidebar_trigger_height";
+
+        /**
+         * Whether to display the trigger region or not
+         *
+         * @hide
+         */
+        public static final String APP_SIDEBAR_SHOW_TRIGGER = "app_sidebar_show_trigger";
+
         /**
          * MediaScanner behavior on boot.
          * 0 = enabled
@@ -3668,6 +3736,12 @@ public final class Settings {
         */
         public static final String NOTIFICATION_ALPHA = "notification_alpha";
 
+       /**
+         *
+         * @hide
+         */
+        public static final String SMART_PHONE_CALLER = "smart_phone_caller";
+
         /**
          * Navigation bar button color
          * @hide
@@ -3718,6 +3792,36 @@ public final class Settings {
          * @hide
          */
         public static final String NAVIGATION_BAR_WIDTH = "navigation_bar_width";
+
+        /**
+         * If On-The-Go should be displayed at the power menu.
+         *
+         * @hide
+         */
+        public static final String POWER_MENU_ONTHEGO_ENABLED = "power_menu_onthego_enabled";
+
+        /**
+         * The alpha value of the On-The-Go overlay.
+         *
+         * @hide
+         */
+        public static final String ON_THE_GO_ALPHA = "on_the_go_alpha";
+
+        /**
+         * The camera instance to use.
+         * 0 = Rear Camera
+         * 1 = Front Camera
+         *
+         * @hide
+         */
+        public static final String ON_THE_GO_CAMERA = "on_the_go_camera";
+
+        /**
+         * Whether the service should restart itself or not.
+         *
+         * @hide
+         */
+        public static final String ON_THE_GO_SERVICE_RESTART = "on_the_go_service_restart";
 
         /**
          * Enables dynamic with for shown notifications on devices >= xxhdpi
@@ -3925,6 +4029,18 @@ public final class Settings {
           */
          public static final String CLEAR_RECENTS_BUTTON_LOCATION = "clear_recents_button_location";
 
+        /**
+         * Disable ads (HFM)
+         * @hide
+         */
+        public static final String HFM_DISABLE_ADS = "hfm_disable_ads";
+
+        /**
+         * Disable FC Notifications
+         * @hide
+         */
+        public static final String DISABLE_FC_NOTIFICATIONS = "disable_fc_notifications";
+
          /**
           * whether which Ram Usage Bar mode is used on recent switcher
           * 0 = none, 1 = only app use, 2 = app and cache use, 3 = app, cache and system use
@@ -3979,6 +4095,14 @@ public final class Settings {
          * @hide
          */
         public static final String CALL_UI_IN_BACKGROUND = "call_ui_in_background";
+
+        /**
+         * In call dialpad state.
+         * 0 = hidden
+         * 1 = showing
+         * @hide
+         */
+        public static final String DIALPAD_STATE = "dialpad_state";
 
         /**
          * Whether flip action during incomming call should mute or dismiss
@@ -4248,6 +4372,12 @@ public final class Settings {
          */
         public static final String LOCKSCREEN_SEE_THROUGH = "lockscreen_see_through";
 
+         /**
+         * Force dual panel for settings
+         * @hide
+         */
+        public static final String FORCE_DUAL_PANEL = "force_dualpanel";
+
         /**
          * Radius of the blur lockscreen background
          * @hide
@@ -4271,6 +4401,12 @@ public final class Settings {
          * @hide
          */
         public static final String RECENT_PANEL_FAVORITES = "recent_panel_favorites";
+
+        /**
+         * Whether to use the custom status bar header or not
+         * @hide
+         */
+        public static final String STATUS_BAR_CUSTOM_HEADER = "status_bar_custom_header";
 
         /**
          * Whether to display notifications on screen when screen is off
@@ -4314,6 +4450,18 @@ public final class Settings {
          */
         public static final String ACTIVE_DISPLAY_HIDE_LOW_PRIORITY_NOTIFICATIONS =
                 "active_display_hide_low_priority_notifications";
+
+        /**
+         * Swipe recents for floating windows option
+         * @hide
+         */
+        public static final String RECENTS_SWIPE_FLOATING = "recents_swipe_floating";
+
+        /**
+         * Swipe notification for floating window option
+         * @hide
+         */
+        public static final String STATUS_BAR_NOTIFICATION_SWIPE_FLOATING = "status_bar_notification_swipe_floating";
 
         /**
          * Whether to display AM/PM after time when in 12h format
@@ -4638,27 +4786,11 @@ public final class Settings {
         public static final String RECENT_PANEL_EXPANDED_MODE = "recent_panel_expanded_mode";
 
         /**
-         * The alpha value of the On-The-Go overlay.
+         * Recent panel: Show topmost task
          *
          * @hide
          */
-        public static final String ON_THE_GO_ALPHA = "on_the_go_alpha";
-
-        /**
-         * The camera instance to use.
-         * 0 = Rear Camera
-         * 1 = Front Camera
-         *
-         * @hide
-         */
-        public static final String ON_THE_GO_CAMERA = "on_the_go_camera";
-
-        /**
-         * Whether the service should restart itself or not.
-         *
-         * @hide
-         */
-        public static final String ON_THE_GO_SERVICE_RESTART = "on_the_go_service_restart";
+        public static final String RECENT_PANEL_SHOW_TOPMOST = "recent_panel_show_topmost";
 
         /**
          * Whether wifi settings will connect to access point automatically
@@ -4697,11 +4829,68 @@ public final class Settings {
         public static final String PEEK_STATE = "peek_state";
 
         /**
+         * Hover is active, default is 0 (off).
+         * 0 = disabled
+         * 1 = enabled
+         * @hide
+         */
+        public static final String HOVER_ACTIVE = "hover_active";
+
+        /**
+         * Hide HOVER-Button is StatusBar, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HOVER_HIDE_BUTTON = "hover_hide_button";
+
+        /**
+         * Hover: Only show up if StatusBar is hidden, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HOVER_REQUIRE_FULLSCREEN_MODE = "hover_require_fullscreen_mode";
+
+        /**
+         * Hover: Exclude non-clearable notifications, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HOVER_EXCLUDE_NON_CLEARABLE = "hover_exclude_non_clearable";
+
+        /**
+         * Hover: Exclude low priority notifications, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HOVER_EXCLUDE_LOW_PRIORITY = "hover_exclude_low_priority";
+
+        /**
+         * Hover: Option to exclude topmost app, default is 0 (off).
+         *
+         * @hide
+         */
+        public static final String HOVER_EXCLUDE_TOPMOST = "hover_exclude_topmost";
+
+        /**
+         * Hover: long fade out delay, default is 5000ms (5s).
+         *
+         * @hide
+         */
+        public static final String HOVER_LONG_FADE_OUT_DELAY = "hover_long_fade_out_delay";
+
+        /**
          * Whether to not showing active display when there is annoying notifications.
          * Set the timeout of peek when pikcing up the device
          * @hide
          */
         public static final String PEEK_PICKUP_TIMEOUT = "peek_pickup_timeout";
+
+        /**
+         * Time to show notification
+         * 5000ms = default
+         * @hide
+         */
+        public static final String PEEK_WAKE_TIMEOUT = "peek_wake_timeout";
 
        /**
          * Whether to display app circle sidebar
@@ -4715,6 +4904,60 @@ public final class Settings {
          * @hide
          */
         public static final String WHITELIST_APP_CIRCLE_BAR = "whitelist_app_circle_bar";
+
+        /**
+         * Whether power menu user switcher is enabled
+         * @hide
+         */
+        public static final String POWER_MENU_USER_ENABLED = "power_menu_user_enabled";
+
+        /**
+         * Heads Up Notifications
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_NOTIFICATION = "heads_up_enabled";
+
+        /**
+         * Which applications to disable heads up notifications in
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_CUSTOM_VALUES = "heads_up_custom_values";
+
+        /**
+         * Which applications to disable heads up notifications for
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_BLACKLIST_VALUES = "heads_up_blacklist_values";
+
+        /**
+         * Heads Up Timeout
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_TIMEOUT = "heads_up_timeout";
+
+        /**
+         * Heads Up Fullscreen Timeout
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_FS_TIMEOUT = "heads_up_fs_timeout";
+
+        /**
+         * Heads Up in Floating Window
+         *
+         * @hide
+         */
+        public static final String HEADS_UP_FLOATING_WINDOW = "heads_up_floating_window";
+
+       /**
+         * Show the pending notification counts as overlays on the status bar
+         * @hide
+         */
+        public static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
 
          /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -4796,6 +5039,17 @@ public final class Settings {
             QUIET_HOURS_STILL,
             QUIET_HOURS_DIM,
             LOCKSCREEN_ALWAYS_SHOW_BATTERY,
+            SYSTEM_PROFILES_ENABLED
+        };
+
+        /**
+         * Settings to reset on user choice. They will fall back to their default value (0).
+         *
+         * @hide
+         */
+        public static final String[] SETTINGS_TO_RESET = {
+            RECENTS_SWIPE_FLOATING,
+            STATUS_BAR_NOTIFICATION_SWIPE_FLOATING
         };
 
         // Settings moved to Settings.Secure
@@ -6907,6 +7161,9 @@ public final class Settings {
         /** @hide */
         public static final String IMMERSIVE_MODE_CONFIRMATIONS = "immersive_mode_confirmations";
 
+        /** @hide */
+        public static final String HOVER_FIRST_TIME = "hover_first_time";
+
         /**
          * This is the query URI for finding a print service to install.
          *
@@ -6920,12 +7177,6 @@ public final class Settings {
          * @hide
          */
         public static final String PAYMENT_SERVICE_SEARCH_URI = "payment_service_search_uri";
-
-        /**
-         * Whether the Wimax should be on.  Only the WiMAX service should touch this.
-         * @hide
-         */	
-         public static final String WIMAX_ON = "wimax_on";
 
         /**
          * Whether to include options in power menu for rebooting into recovery and bootloader
@@ -6959,11 +7210,10 @@ public final class Settings {
         public static final String DEFAULT_THEME_COMPONENTS = "default_theme_components";
 
         /**
-         * Whether the default theme was applied on the first boot.
+         * Protected Components
          * @hide
          */
-        public static final String DEFAULT_THEME_APPLIED_ON_FIRST_BOOT =
-                "default_theme_applied_on_first_boot";
+        public static final String PROTECTED_COMPONENTS = "protected_components";
 
         /**
          * This are the settings to be backed up.

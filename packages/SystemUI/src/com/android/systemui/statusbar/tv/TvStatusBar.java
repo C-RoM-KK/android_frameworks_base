@@ -150,6 +150,12 @@ public class TvStatusBar extends BaseStatusBar {
         return true;
     }
 
+    @Override
+    public boolean isExpandedVisible() {
+        return false;
+    }
+
+    @Override
     public View getStatusBarView() {
         return null;
     }
@@ -160,6 +166,10 @@ public class TvStatusBar extends BaseStatusBar {
 
     @Override
     public void animateExpandSettingsPanel(boolean flip) {
+    }
+
+    @Override
+    public void hideHeadsUp() {
     }
 
     @Override

@@ -70,12 +70,14 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
     private final static String TAG = "Peek";
     public final static boolean DEBUG = false;
 
+    private static final String PEEK_APPLICATION = "com.jedga.peek";
+
     private static final float ICON_LOW_OPACITY = 0.3f;
-    private static final int NOTIFICATION_PEEK_TIME = 5000; // 5 secs
     private static final long SCREEN_ON_START_DELAY = 300; // 300 ms
     private static final long REMOVE_VIEW_DELAY = 300; // 300 ms
 
     private int mPeekPickupTimeout;
+    private int mPeekWakeTimeout;
 
     private BaseStatusBar mStatusBar;
 
@@ -113,10 +115,24 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
         return mKeyguardManager.isKeyguardLocked() && mKeyguardManager.isKeyguardSecure();
     }
 
+    private boolean isPeekAppInstalled() {
+        return isPackageInstalled(PEEK_APPLICATION);
+    }
+
+    private boolean isPackageInstalled(String packagename) {
+        PackageManager pm = mContext.getPackageManager();
+        try {
+            pm.getPackageInfo(packagename, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (NameNotFoundException e) {
+            return false;
+        }
+    }
+
     private void updateStatus() {
         mEnabled = Settings.System.getIntForUser(
                 mContext.getContentResolver(), Settings.System.PEEK_STATE,
-                0, UserHandle.USER_CURRENT) == 1;
+                0, UserHandle.USER_CURRENT) == 1 && !isPeekAppInstalled();
         if (mEnabled) {
             mSensorHandler.registerScreenReceiver();
         } else {
@@ -187,7 +203,8 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if(event.getAction() == MotionEvent.ACTION_UP) {
-                    // mStatusBar.dismissHover(); // hide hover if showing
+                    // hide hover if showing
+                    mStatusBar.getHoverInstance().dismissHover(false, false);
                     dismissNotification();
                 }
                 return true;
@@ -321,33 +338,36 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
     private void scheduleTasks() {
         mHandler.removeCallbacksAndMessages(null);
 
+        mPeekWakeTimeout = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.PEEK_WAKE_TIMEOUT, 5000, UserHandle.USER_CURRENT);
+
         // turn on screen task
         mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+		    @Override
+		    public void run() {
                 if(DEBUG) Log.d(TAG, "Turning screen on");
                 mPowerManager.wakeUp(SystemClock.uptimeMillis());
-            }
-        }, SCREEN_ON_START_DELAY);
+		    }
+	    }, SCREEN_ON_START_DELAY);
 
         // turn off screen task
         mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+		    @Override
+		    public void run() {
                 if(mShowing) {
                     if(DEBUG) Log.d(TAG, "Turning screen off");
                     mPowerManager.goToSleep(SystemClock.uptimeMillis());
                 }
-            }
-        }, SCREEN_ON_START_DELAY + NOTIFICATION_PEEK_TIME);
+		    }
+	    }, SCREEN_ON_START_DELAY + mPeekWakeTimeout);
 
         // remove view task (make sure screen is off by delaying a bit)
         mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+		    @Override
+		    public void run() {
                 dismissNotification();
-            }
-        }, SCREEN_ON_START_DELAY + (NOTIFICATION_PEEK_TIME * (long) 1.3));
+		    }
+	    }, SCREEN_ON_START_DELAY + (mPeekWakeTimeout * (long) 1.3));
     }
 
     public void showNotification(StatusBarNotification n, boolean update) {
@@ -358,6 +378,16 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
         boolean shouldDisplay = shouldDisplayNotification(n) || force;
         addNotification(n);
 
+        // first check if is blacklisted
+        boolean allowed = true; // default on
+        try {
+            allowed = mStatusBar.getNotificationManager().isPackageAllowedForPeek(n.getPackageName());
+        } catch (android.os.RemoteException ex) {
+            // System is dead
+        }
+        if(!allowed) return;
+
+        // not blacklisted, process it
         if(!mEnabled /* peek is disabled */
                 || (mPowerManager.isScreenOn() && !mShowing) /* no peek when screen is on */
                 || !shouldDisplay /* notification has already been displayed */
@@ -388,8 +418,8 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
                 }
 
                 mWakeLockHandler.removeCallbacks(mPartialWakeLockRunnable);
-                mPeekPickupTimeout = Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                        Settings.System.PEEK_PICKUP_TIMEOUT, 0, UserHandle.USER_CURRENT);
+                mPeekPickupTimeout = Settings.System.getIntForUser(mContext.getContentResolver(),
+                        Settings.System.PEEK_PICKUP_TIMEOUT, 10000, UserHandle.USER_CURRENT);
                 mWakeLockHandler.postDelayed(mPartialWakeLockRunnable, mPeekPickupTimeout);
 
                 mNextNotification = n;
@@ -670,5 +700,23 @@ public class Peek implements SensorActivityHandler.SensorChangedCallback {
             mHandler.removeCallbacksAndMessages(null);
             dismissNotification();
         }
+    }
+
+    class SettingsObserver extends ContentObserver {
+        SettingsObserver(Handler handler) {
+            super(handler);
+        }
+
+        void observe() {
+            ContentResolver resolver = mContext.getContentResolver();
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.System.PEEK_PICKUP_TIMEOUT), false, this,
+                    UserHandle.USER_ALL);
+            resolver.registerContentObserver(Settings.Secure.getUriFor(
+                    Settings.System.PEEK_WAKE_TIMEOUT), false, this,
+                    UserHandle.USER_ALL);
+        }
+
+        @Override public void onChange(boolean selfChange) {}
     }
 }

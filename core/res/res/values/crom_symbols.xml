@@ -41,21 +41,17 @@
   <java-symbol type="drawable" name="ic_lock_reboot" />
   <java-symbol type="drawable" name="ic_lock_screenshot" />
   <java-symbol type="drawable" name="ic_lock_screen_record" />
+  <java-symbol type="drawable" name="ic_lock_profile" />
   <java-symbol type="string" name="global_action_reboot" />
   <java-symbol type="string" name="global_actions" />
   <java-symbol type="string" name="global_action_screenshot" />
+  <java-symbol type="string" name="global_action_choose_profile" />
 
   <java-symbol type="array" name="shutdown_reboot_actions" />
   <java-symbol type="array" name="shutdown_reboot_options" />
 
   <java-symbol type="string" name="reboot_progress" />
   <java-symbol type="string" name="reboot_system" />
-
-    <!-- Profiles -->
-    <java-symbol type="xml" name="profile_default" />
-    <java-symbol type="string" name="wildcardProfile" />
-    <java-symbol type="string" name="profile_picker_title" />
-    <java-symbol type="string" name="profile_none" />
 
   <!-- Config IME switcher -->
   <java-symbol type="bool" name="config_show_IMESwitcher" />
@@ -154,12 +150,7 @@
   <!-- UI theme mode -->
   <java-symbol type="integer" name="config_uiThemeMode" />
   <java-symbol type="string" name="theme_auto_switch_mode_error" />
-
-  <!-- Statusbar double tap gesture -->
-  <java-symbol type="bool" name="config_disableDoubleTapSleepGesture" />
-
-  <!-- Force permanent menu key -->
-  <java-symbol type="bool" name="config_force_permanent_menu_key" />
+  <java-symbol type="drawable" name="dialog_full_holo_dark" />
 
   <!-- Advanced Reboot -->
   <java-symbol type="array" name="shutdown_reboot_options" />
@@ -189,6 +180,13 @@
 
   <!-- Panel auto brightness -->
   <java-symbol type="integer" name="config_panelAutoBrightnessValue" />
+  
+  <!--Setting confirmation dialog-->
+  <java-symbol type="id" name="setting_confirmation_dialog_visual_hint" />
+  <java-symbol type="layout" name="setting_confirmation_dialog" />
+  <java-symbol type="string" name="setting_confirmation_ask_me_later" />
+  <java-symbol type="string" name="setting_confirmation_yes" />
+  <java-symbol type="string" name="setting_confirmation_no" />
 
   <!-- Active display -->
   <java-symbol type="dimen" name="lockscreen_target_inset" />
@@ -196,14 +194,28 @@
   <java-symbol type="dimen" name="glowpad_notification_text_radius" />
   <java-symbol type="dimen" name="glowpad_overflow_notifications_margin_top" />
 
-  <!-- Device supports LED flashlight -->
-  <java-symbol type="bool" name="config_enableTorch" />
+  <!-- WiFi turn off notification -->
+  <java-symbol type="string" name="notify_turn_wifi_off_title" />
 
   <!-- On-The-Go -->
   <java-symbol type="string" name="global_action_onthego" />
   <java-symbol type="drawable" name="ic_lock_onthego" />
 
-  <!-- WiFi turn off notification -->
-  <java-symbol type="string" name="notify_turn_wifi_off_title" />
+   <!--Profiles-->
+  <java-symbol type="string" name="profile_none" />
+  <java-symbol type="string" name="profile_picker_title" />
+  <java-symbol type="string" name="wildcardProfile" />
+  <java-symbol type="xml" name="profile_default" />
+
+  <!-- Button and keyboard backlight -->
+  <java-symbol type="bool" name="config_deviceHasVariableButtonBrightness" />
+  <java-symbol type="integer" name="config_buttonBrightnessSettingDefault" />
+  <java-symbol type="integer" name="config_keyboardBrightnessSettingDefault" />
+
+  <!-- Config.xml entries -->
+  <java-symbol type="bool" name="config_samsung_stk" />
+  <java-symbol type="string" name="config_legacyUmsLunFile" />
+  <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
+  <java-symbol type="bool" name="config_batterySdCardAccessibility" />
 
 </resources>
