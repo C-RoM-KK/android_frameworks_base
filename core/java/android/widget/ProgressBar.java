@@ -300,7 +300,7 @@ public class ProgressBar extends View {
 		    a.getInt(R.styleable.ProgressBar_secondaryProgress, mSecondaryProgress));
 
 		drawable = a.getDrawable(R.styleable.ProgressBar_indeterminateDrawable);
-		if (String.valueOf(drawable).contains("android.graphics.drawable.AnimationDrawabl")) {
+		if (String.valueOf(drawable).contains("android.graphics.drawable.AnimationDrawable")) {
 			boolean IsMirrorMode = Settings.System.getInt(mContext.getContentResolver(),
 			                       Settings.System.PROGRESSBAR_MIRROR, 1) == 1;
 			boolean IsReversed = Settings.System.getInt(mContext.getContentResolver(),
