@@ -4036,6 +4036,13 @@ public final class Settings {
         public static final String HFM_DISABLE_ADS = "hfm_disable_ads";
 
         /**
+         * Use HOME/END instead of UP/DOWN as longpress action for NavBar IME Cursors
+         *
+         * @hide
+         */
+        public static final String IME_CURSOR_LONGPRESS_ACTION = "ime_cursor_longpress_action";
+
+        /**
          * Disable FC Notifications
          * @hide
          */
