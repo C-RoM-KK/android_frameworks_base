@@ -218,4 +218,7 @@
   <java-symbol type="bool" name="config_smsSamsungCdmaAlternateMessageIDEncoding" />
   <java-symbol type="bool" name="config_batterySdCardAccessibility" />
 
+  <!-- Wifi tethering-->
+  <java-symbol type="plurals" name="tethered_clients_connected" />
+
 </resources>
