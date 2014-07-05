@@ -216,7 +216,6 @@ void Font::drawCachedGlyphBitmap(CachedGlyphInfo* glyph, int x, int y, uint8_t* 
     PixelBuffer* pixelBuffer = cacheTexture->getPixelBuffer();
 
     uint32_t formatSize = PixelBuffer::formatSize(pixelBuffer->getFormat());
-    uint32_t alpha_channel_offset = PixelBuffer::formatAlphaOffset(pixelBuffer->getFormat());
     uint32_t cacheWidth = cacheTexture->getWidth();
     uint32_t srcStride = formatSize * cacheWidth;
     uint32_t startY = glyph->mStartY * srcStride;
@@ -231,7 +230,7 @@ void Font::drawCachedGlyphBitmap(CachedGlyphInfo* glyph, int x, int y, uint8_t* 
             memcpy(&bitmap[bitmapY + dstX], &cacheBuffer[cacheY + glyph->mStartX], glyph->mBitmapWidth);
         } else {
             for (uint32_t i = 0; i < glyph->mBitmapWidth; ++i) {
-                bitmap[bitmapY + dstX + i] = cacheBuffer[cacheY + (glyph->mStartX + i)*formatSize + alpha_channel_offset];
+                bitmap[bitmapY + dstX + i] = cacheBuffer[cacheY + (glyph->mStartX + i)*formatSize];
             }
         }
     }
@@ -416,10 +415,10 @@ void Font::render(SkPaint* paint, const char* text, uint32_t start, uint32_t len
         // If it's still not valid, we couldn't cache it, so we shouldn't
         // draw garbage; also skip empty glyphs (spaces)
         if (cachedGlyph->mIsValid && cachedGlyph->mCacheTexture) {
-            int penX = x + (int) roundf(positions[(glyphsCount << 1)]);
-            int penY = y + (int) roundf(positions[(glyphsCount << 1) + 1]);
+            float penX = x + positions[(glyphsCount << 1)];
+            float penY = y + positions[(glyphsCount << 1) + 1];
 
-            (*this.*render)(cachedGlyph, penX, penY,
+            (*this.*render)(cachedGlyph, roundf(penX), roundf(penY),
                     bitmap, bitmapW, bitmapH, bounds, positions);
         }
 
