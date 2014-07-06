@@ -495,7 +495,6 @@ public class AudioService extends IAudioService.Stub {
 
         PowerManager pm = (PowerManager)context.getSystemService(Context.POWER_SERVICE);
         mAudioEventWakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "handleAudioEvent");
-
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
         mHasVibrator = vibrator == null ? false : vibrator.hasVibrator();
 
@@ -2669,14 +2668,25 @@ public class AudioService extends IAudioService.Stub {
             }
         }
         public void onServiceDisconnected(int profile) {
+            Log.d(TAG, "onServiceDisconnected: Bluetooth profile: " + profile);
             switch(profile) {
             case BluetoothProfile.A2DP:
                 synchronized (mA2dpAvrcpLock) {
                     mA2dp = null;
                     synchronized (mConnectedDevices) {
                         if (mConnectedDevices.containsKey(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP)) {
-                            makeA2dpDeviceUnavailableNow(
-                                    mConnectedDevices.get(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP));
+                            Log.d(TAG, "A2dp service disconnects, pause music player");
+                            BluetoothAdapter adapter = BluetoothAdapter.getDefaultAdapter();
+                            BluetoothDevice btDevice = adapter.getRemoteDevice
+                                    (mConnectedDevices.get(AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP));
+                            int delay = checkSendBecomingNoisyIntent(
+                                                AudioSystem.DEVICE_OUT_BLUETOOTH_A2DP, 0);
+                            queueMsgUnderWakeLock(mAudioHandler,
+                                                MSG_SET_A2DP_CONNECTION_STATE,
+                                                BluetoothA2dp.STATE_DISCONNECTED,
+                                                0,
+                                                btDevice,
+                                                delay);
                         }
                     }
                 }
@@ -4597,51 +4607,6 @@ public class AudioService extends IAudioService.Stub {
                     }
 
                     final Context context = mUiContext != null ? mUiContext : mContext;
-                    mVolumePanel = new VolumePanel(context, AudioService.this);
-                    mVolumePanel.postMasterVolumeChanged(flags);
-                }
-            });
-        }
-    }
-
-    private void masterMuteChanged(final int flags) {
-        if (mUiContext != null && mVolumePanel != null) {
-            mVolumePanel.postMasterMuteChanged(flags);
-        } else {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mUiContext == null) {
-                        mUiContext = ThemeUtils.createUiContext(mContext);
-                    }
-
-                    final Context context = mUiContext != null ? mUiContext : mContext;
-                    mVolumePanel = new VolumePanel(context, AudioService.this);
-                    mVolumePanel.postMasterMuteChanged(flags);
-                }
-            });
-        }
-    }
-
-    /**
-     * Recreate volume panel:
-     * - At master volume changed
-     * - At master mute changed
-     * - At UI change like applying a theme
-     * - When requesting safe headset
-     */
-    private void masterVolumeChanged(final int flags) {
-        if (mUiContext != null && mVolumePanel != null) {
-            mVolumePanel.postMasterVolumeChanged(flags);
-        } else {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mUiContext == null) {
-                        mUiContext = ThemeUtils.createUiContext(mContext);
-                    }
-
-                    final Context context = mUiContext != null ? mUiContext : mContext;
                     mVolumePanel = new VolumePanel(context, mContext, AudioService.this);
                     mVolumePanel.postMasterVolumeChanged(flags);
                 }
@@ -4682,25 +4647,6 @@ public class AudioService extends IAudioService.Stub {
                     final Context context = mUiContext != null ? mUiContext : mContext;
                     mVolumePanel = new VolumePanel(context, mContext, AudioService.this);
                     mVolumePanel.postVolumeChanged(streamType, flags);
-                }
-            });
-        }
-    }
-
-    private void displaySafeVolumeWarning(final int flags) {
-        if (mUiContext != null && mVolumePanel != null) {
-            mVolumePanel.postDisplaySafeVolumeWarning(flags);
-        } else {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    if (mUiContext == null) {
-                        mUiContext = ThemeUtils.createUiContext(mContext);
-                    }
-
-                    final Context context = mUiContext != null ? mUiContext : mContext;
-                    mVolumePanel = new VolumePanel(context, AudioService.this);
-                    mVolumePanel.postDisplaySafeVolumeWarning(flags);
                 }
             });
         }
