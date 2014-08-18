@@ -97,7 +97,7 @@ public class VolumePanel extends Handler implements OnSeekBarChangeListener, Vie
     private static final int FREE_DELAY = 10000;
     private static final int TIMEOUT_DELAY = 3000;
 
-    private static final int ANIMATION_DURATION = 350; // same as hover view
+    private static final int ANIMATION_DURATION = 500; // same as hover view
 
     public static final String ACTION_VOLUMEPANEL_SHOWN
             = "android.view.volumepanel.SHOWN";
